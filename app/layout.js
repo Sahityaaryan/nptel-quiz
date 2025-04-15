@@ -18,11 +18,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="cupcake">
+      {/* <html ></html> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+
+        <div className="mx-auto max-w-5xl text-2xl mb-10">
         {children}
+
+        </div>
       </body>
     </html>
   );
