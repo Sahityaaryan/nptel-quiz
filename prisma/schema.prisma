@@ -14,6 +14,14 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
+enum Role {
+  public
+  admin
+}
+
+// User model for authentication and tracking subscriptions/progress
+
+
 // User model for authentication and tracking subscriptions/progress
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
@@ -25,6 +33,7 @@ model User {
   progress      UserCourseProgress[] // Progress across courses/subtopics
   quizAttempts  QuizAttempt[]   // User's quiz attempts
   revisionHub   RevisionHub[]   // Saved quizzes/notes for revision
+  role          Role            @default(public)
 }
 
 // Course model for public and subscribed courses
@@ -132,3 +141,16 @@ model RevisionHub {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,17 +1,23 @@
-import { getSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
 
+
+import { redirect } from 'next/navigation';
+import { getUserSession } from '../lib/session';
 import { fetchUserStats } from '../lib/actions';
 
 export default async function Dashboard() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+ 
+  
+  const user = await getUserSession();
 
-  const userStats = await fetchUserStats(session.user.id); // Assume function
+  console.log('dashboard user : ', user);
+  if (!user) redirect('/login');
+
+  // const userStats = await fetchUserStats(user.id); // Assume function
+  const userStats = {subscribedCourses:3, quizzesCompleted:4}
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold">Welcome, {session.user.name}</h1>
+    <div className="p-4 flex-col">
+      <h1 className="text-3xl font-bold">Welcome, {user.name}</h1>
       <div className="stats shadow">
         <div className="stat">
           <div className="stat-title">Courses Subscribed</div>
@@ -24,4 +30,5 @@ export default async function Dashboard() {
       </div>
     </div>
   );
+
 }

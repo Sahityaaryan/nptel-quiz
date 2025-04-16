@@ -106,3 +106,93 @@ export async function fetchSubTopics(courseId) {
   });
   return subtopics;
 }
+
+
+/**
+ * Adds a new course to the database.
+ * @param {Object} data - Course details.
+ * @param {string} data.title - Course title.
+ * @param {string} data.description - Course description.
+ * @param {string} data.thumbnail - URL to course thumbnail.
+ * @param {number} data.price - Course price.
+ * @param {string} data.category - Course category.
+ * @param {string} data.difficulty - Course difficulty.
+ * @param {number} data.duration - Course duration in minutes.
+ * @returns {Promise<Object>} - The created course.
+ */
+export async function addCourse(data) {
+  const { title, description, thumbnail, price, category, difficulty, duration } = data;
+  const course = await prisma.course.create({
+    data: {
+      title,
+      description,
+      thumbnail,
+      price,
+      category,
+      difficulty,
+      duration,
+    },
+  });
+  return course;
+}
+
+/**
+ * Adds a new subtopic to a course, including notes.
+ * @param {Object} data - Subtopic details.
+ * @param {string} data.courseId - ID of the course.
+ * @param {string} data.title - Subtopic title.
+ * @param {string} data.description - Subtopic description.
+ * @param {string} data.notes - Notes for the subtopic.
+ * @returns {Promise<Object>} - The created subtopic.
+ */
+export async function addSubtopic(data) {
+  const { courseId, title, description, notes } = data;
+  const subtopic = await prisma.subtopic.create({
+    data: {
+      courseId,
+      title,
+      description,
+      notes,
+    },
+  });
+  return subtopic;
+}
+
+
+/**
+ * Fetches subtopics for a given course ID.
+ * @param {string} courseId - The ID of the course.
+ * @returns {Promise<Array>} - List of subtopics with id and title.
+ */
+export async function getSubtopicsByCourse(courseId) {
+  if (!courseId) {
+    throw new Error('Course ID is required');
+  }
+  const subtopics = await prisma.subtopic.findMany({
+    where: { courseId },
+    select: { id: true, title: true },
+  });
+  return subtopics;
+}
+
+/**
+ * Adds a new quiz to a subtopic.
+ * @param {Object} data - Quiz details.
+ * @param {string} data.subtopicId - ID of the subtopic.
+ * @param {string} data.title - Quiz title.
+ * @param {Array} data.questions - Array of question objects.
+ * @param {number} data.duration - Quiz duration in minutes.
+ * @returns {Promise<Object>} - The created quiz.
+ */
+export async function addQuiz(data) {
+  const { subtopicId, title, questions, duration } = data;
+  const quiz = await prisma.quiz.create({
+    data: {
+      subtopicId,
+      title,
+      questions: JSON.stringify(questions), // Store questions as JSON
+      duration,
+    },
+  });
+  return quiz;
+}

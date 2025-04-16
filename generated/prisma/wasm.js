@@ -115,7 +115,8 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  role: 'role'
 };
 
 exports.Prisma.CourseScalarFieldEnum = {
@@ -206,7 +207,10 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
-
+exports.Role = exports.$Enums.Role = {
+  public: 'public',
+  admin: 'admin'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
