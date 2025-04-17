@@ -1,7 +1,10 @@
 // lib/actions.js
 'use server';
 
+import Email from "next-auth/providers/email";
 import prisma from "./prisma";
+import { getUserSession } from "./session";
+
 
 /**
  * Fetches featured courses.
@@ -22,10 +25,38 @@ export async function fetchFeaturedCourses() {
       duration: true,
     },
   });
-
-  console.log("[courses](fetched from the db): ", courses);
-  return courses;
 }
+
+  
+  export async function getQuizBySubtopicId(subtopicId) {
+    if (!subtopicId) {
+      throw new Error('subtopicId is required');
+    }
+  
+    try {
+      const quiz = await prisma.quiz.findFirst({
+        where: {
+          subtopicId: subtopicId,
+        },
+        include: {
+          subtopic: true, // Include related Subtopic data
+          attempts: true, // Include related QuizAttempt data
+          revisionHub: true, // Include related RevisionHub data
+        },
+      });
+  
+      if (!quiz) {
+        throw new Error(`No quiz found for subtopicId: ${subtopicId}`);
+      }
+  
+      return quiz;
+    } catch (error) {
+      console.error('Error fetching quiz by subtopicId:', error);
+      // throw error;
+    }
+  }
+  
+  
 
 /**
  * Fetches all available courses.
@@ -195,4 +226,56 @@ export async function addQuiz(data) {
     },
   });
   return quiz;
+}
+
+export async function getSubtopicBySubtopicId(subtopicId){
+  if (!subtopicId) {
+    throw new Error('subtopicId is required');
+  }
+
+  try {
+    const subtopic = await prisma.subtopic.findFirst({
+      where: {
+        id: subtopicId
+      },
+      select:{
+        title:true,
+      },
+    })
+
+
+    return subtopic;
+  } catch (err) {
+    console.error('Error fetching subtopic by subtopicId:', err);
+    // throw err;
+  }
+}
+
+
+export async function saveQuizAttempt({ quizId, answers, score }) {
+  try {
+    const user = await getUserSession();
+    let {id} = await prisma.user.findUnique({
+      where:{
+        email: user.email
+      },
+      select:{id:true},
+    })
+    const userId = id;
+    const quizAttempt = await prisma.quizAttempt.create({
+      data: {
+        userId,
+        quizId,
+        answers, // Already formatted as [{ questionIndex, selectedAnswer }]
+        score: parseFloat(score),
+        completedAt: new Date(),
+      },
+    });
+
+
+    return quizAttempt;
+  } catch (error) {
+    console.error('Error saving quiz attempt:', error);
+    throw error;
+  }
 }

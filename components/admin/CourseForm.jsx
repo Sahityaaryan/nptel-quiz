@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { addCourse } from '@/app/lib/actions';
 // import { useRouter } from 'next/navigation';
+import { courseCategory } from '@/data/category';
 
 export default function CourseForm() {
   const [error, setError] = useState(null);
@@ -92,11 +93,10 @@ export default function CourseForm() {
           </label>
           <select id="category" name="category" className="select select-bordered" required>
             <option value="">Select Category</option>
-            <option value="programming">Programming</option>
-            <option value="mathematics">Mathematics</option>
-            <option value="science">Science</option>
-            <option value="computer_science">Computer Science</option>
-            <option value="electronics_and_communication">Electronics and Communication</option>
+
+            {courseCategory.map((category)=>{
+                return (<option value={category.value}>{category.title}</option>);
+            })}
           </select>
         </div>
         <div className="form-control">

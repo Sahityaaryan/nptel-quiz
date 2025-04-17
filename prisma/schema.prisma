@@ -59,7 +59,7 @@ model Subtopic {
   courseId      String          @db.ObjectId
   course        Course          @relation(fields: [courseId], references: [id])
   title         String
-  description   String?
+  description   String? 
   notes         String?         // Text content or URL to PDF/image
   quizzes       Quiz[]          // Quizzes for this subtopic
   progress      UserCourseProgress[] // Progress specific to this subtopic

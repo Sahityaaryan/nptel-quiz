@@ -7,10 +7,10 @@ import prisma from '@/app/lib/prisma';
 export default async function NewSubtopicPage() {
   // const session = await auth();
   const user = await getUserSession();
-  console.log("[subtopics]: ", user);
-//   if (!user || user.role !== 'admin') {
-//     redirect('/login');
-//   }
+  // console.log("[subtopics]: ", user);
+  if (!user || user.role !== 'admin') {
+    redirect('/login');
+  }
 
   const courses = await prisma.course.findMany({
     select: { id: true, title: true },
