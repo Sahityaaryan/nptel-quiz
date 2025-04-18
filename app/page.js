@@ -4,7 +4,7 @@ import LandingPage from "@/components/LandingPage"
 import Nav from "@/components/Nav"
 
 export default async function Home() {
-  const user = await getUserSession()
+  // const user = await getUserSession()
   return( <main className="">
 
     <Nav/>

@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "axios": "^1.8.4",
     "daisyui": "^5.0.19",
+    "framer-motion": "^12.7.4",
+    "lucide-react": "^0.501.0",
     "next": "15.3.0",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",

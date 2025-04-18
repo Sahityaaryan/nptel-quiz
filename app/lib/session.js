@@ -3,7 +3,7 @@ import { User, getServerSession } from 'next-auth'
 export const session = async ({ session, token }) => {
   // session.user.id = token.id
 
-  console.log("[session]: ", token);
+  // console.log("[session]: ", token);
 
   if (token.id) {
     session.user = session.user || {};

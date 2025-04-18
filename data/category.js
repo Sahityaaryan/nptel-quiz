@@ -6,14 +6,6 @@ export const courseCategory = [
     value:'programming',
   },
 {
-    title:'Mathematics',
-    value:'mathematics',
-  },
-{
-    title:'Science',
-    value:'science',
-  },
-{
     title:'Computer Science',
     value:'computer_science',
   },

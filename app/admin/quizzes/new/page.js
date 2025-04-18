@@ -6,7 +6,7 @@ import prisma from '@/app/lib/prisma';
 export default async function NewQuizPage() {
 //   const session = await auth();
   const user = await getUserSession();
-  console.log("[quizzes]: ", user);
+  // console.log("[quizzes]: ", user);
   if (!user || user.role !== 'admin') {
     redirect('/login');
   }

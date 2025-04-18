@@ -22,7 +22,7 @@ export default function CourseForm() {
       };
 
       const result = await addCourse(data);
-      console.log("[course created] ", result);
+      // console.log("[course created] ", result);
       setSuccess('Course created successfully!');
       setError(null);
       // setTimeout(() => router.push('/admin/courses'), 2000);

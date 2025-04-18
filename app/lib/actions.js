@@ -1,31 +1,9 @@
 // lib/actions.js
 'use server';
 
-import Email from "next-auth/providers/email";
 import prisma from "./prisma";
 import { getUserSession } from "./session";
 
-
-/**
- * Fetches featured courses.
- * Note: Since there is no specific "featured" field in the schema,
- * this function fetches all courses for now. You can modify it later
- * if you add a field like `isFeatured` to the Course model.
- */
-export async function fetchFeaturedCourses() {
-  const courses = await prisma.course.findMany({ 
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      thumbnail: true,
-      price: true,
-      category: true,
-      difficulty: true,
-      duration: true,
-    },
-  });
-}
 
   
   export async function getQuizBySubtopicId(subtopicId) {
@@ -52,7 +30,6 @@ export async function fetchFeaturedCourses() {
       return quiz;
     } catch (error) {
       console.error('Error fetching quiz by subtopicId:', error);
-      // throw error;
     }
   }
   
@@ -62,19 +39,26 @@ export async function fetchFeaturedCourses() {
  * Fetches all available courses.
  */
 export async function fetchAllCourses() {
-  const courses = await prisma.course.findMany({
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      thumbnail: true,
-      price: true,
-      category: true,
-      difficulty: true,
-      duration: true,
-    },
-  });
-  return courses;
+
+  try {
+    const courses = await prisma.course.findMany({ 
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        thumbnail: true,
+        price: true,
+        category: true,
+        difficulty: true,
+        duration: true,
+      },
+    });
+
+    return courses;
+  } catch (err) {
+    console.error("[Error while fetching all courses]: ", err);
+    throw new Error(`Can't Fetch All Courses`);
+  }
 }
 
 /**
@@ -84,7 +68,7 @@ export async function fetchAllCourses() {
  * @returns {Object} - An object with `subscribedCourses` and `quizzesCompleted`.
  */
 export async function fetchUserStats(userId) {
-    console.log("user: ", userId);
+    // console.log("user: ", userId);
   const subscribedCourses = await prisma.subscription.count({
     where: { userId },
   });
@@ -103,7 +87,6 @@ export async function fetchCourse(courseId) {
   const course = await prisma.course.findUnique({
     where: { id: courseId },
     select: {
-      id: true,
       title: true,
       description: true,
       thumbnail: true,
@@ -278,4 +261,85 @@ export async function saveQuizAttempt({ quizId, answers, score }) {
     console.error('Error saving quiz attempt:', error);
     throw error;
   }
+}
+
+
+// Create Razorpay order
+export async function createRazorpayOrder({ amount, currency }) {
+  try {
+    const response = await axios.post(
+      'https://api.razorpay.com/v1/orders',
+      {
+        amount, // In paise
+        currency,
+        receipt: `receipt_${Date.now()}`,
+        notes: { app: 'Quiz Masalaa' },
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString('base64')}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error creating Razorpay order:', error.response?.data || error.message);
+    throw new Error('Failed to create payment order');
+  }
+}
+
+// Verify payment and subscribe user to course
+export async function verifyAndSubscribe({ paymentId, orderId, signature, userId, courseId }) {
+  try {
+    // Verify payment signature
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    const generatedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(`${orderId}|${paymentId}`)
+      .digest('hex');
+    
+    if (generatedSignature !== signature) {
+      throw new Error('Invalid payment signature');
+    }
+
+    // Create Subscription
+    const subscription = await prisma.subscription.create({
+      data: {
+        userId,
+        courseId,
+      },
+    });
+
+    // Optionally log payment details (e.g., in a Payment model)
+    return { status: 'success', subscription };
+  } catch (error) {
+    console.error('Error verifying payment or subscribing:', error);
+    throw error;
+  }
+}
+
+export  async function fetchSubscription({ courseId}){
+
+    try {
+      const user = await getUserSession();
+      let {id} = await prisma.user.findUnique({
+        where:{
+          email: user.email
+        },
+        select:{id:true},
+      })
+      const userId = id;
+      const subscription = await prisma.subscription.findFirst({
+        where: {
+          userId,
+          courseId,
+        },
+      });
+
+      return subscription;
+    } catch (err) {
+      console.error('Error while fetching subscription: ', err);
+    throw err; 
+    }
 }

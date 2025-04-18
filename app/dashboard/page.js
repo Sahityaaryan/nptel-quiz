@@ -9,7 +9,7 @@ export default async function Dashboard() {
   
   const user = await getUserSession();
 
-  console.log('dashboard user : ', user);
+  // console.log('dashboard user : ', user);
   if (!user) redirect('/login');
 
   // const userStats = await fetchUserStats(user.id); // Assume function

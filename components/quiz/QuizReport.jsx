@@ -3,13 +3,14 @@
 import { saveQuizAttempt } from "@/app/lib/actions";
 // import { getUserSession } from "@/app/lib/session";
 import { useEffect, useContext } from "react";
+import { useRouter } from "next/navigation";
 // import Quiz from "./Quiz";
 
 
 export default function QuizReport({ questions, selectedAnswers, quiz }) {
     // const {user} = useUser();
     // const {quiz} = useQuiz();
-
+  const router = useRouter();
   const score = questions.reduce((total, _, index) => {
     return selectedAnswers[index]?.isCorrect ? total + 1 : total;
   }, 0);
@@ -43,7 +44,7 @@ export default function QuizReport({ questions, selectedAnswers, quiz }) {
           score: percentage,
         });
 
-        console.log("my attempt: ", attempt);
+        // console.log("my attempt: ", attempt);
       } catch (err) {
         console.error('Error saving quiz attempt:', err);
         // setError('Failed to save attempt');
@@ -57,7 +58,22 @@ export default function QuizReport({ questions, selectedAnswers, quiz }) {
 
   return (
     <div className="container mx-auto max-w-3xl mt-10">
+
+<button onClick={() => router.back()} className="inline-flex items-center mb-4 btn btn-ghost text-sm">
+  <svg
+    className="w-4 h-4 mr-2"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+  </svg>
+  Go Back
+</button>
+
       <div className="card bg-base-100 shadow-xl p-6">
+
         <h2 className="text-2xl font-bold text-primary mb-4">Quiz Report</h2>
         <div className="mb-6">
           <p className="text-lg font-semibold">

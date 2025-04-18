@@ -1,10 +1,8 @@
-
-
 import Link from "next/link";
 
-export default function CourseCard({course}) {
+export default function CourseCard({course , toSubscribe}) {
 
-    console.log("course: ", course);
+    // console.log("course: ", course);
 
 
     return (
@@ -22,12 +20,12 @@ export default function CourseCard({course}) {
                 <p className="m-3" >{course.description}</p>
                <div className="w-full">
                 {/* <"> */}
-               <span className="btn btn-outline btn-warning"> &#x20b9; {course.price}</span>
+               {/* <span className="btn btn-outline btn-warning"> &#x20b9; {course.price}</span> */}
+               { (toSubscribe) ?  <span className="btn btn-outline btn-warning"> &#x20b9; {course.price}</span>: null}
                 {/* </div> */}
                <div className="card-actions justify-end">
                 <button className="btn btn-secondary">Demo</button>
-                <Link href={`/courses/${course.id}`}><button className="btn btn-success">Enroll Now</button></Link>
-                    
+                <Link href={toSubscribe ? `/checkout/${course.id}` :`/courses/${course.id}`}><button className="btn btn-success">{(toSubscribe) ? <span>Enroll Now</span>: <span> Let's Study</span>}</button></Link>
                     
                 </div>
                </div>

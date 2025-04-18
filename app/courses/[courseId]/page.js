@@ -1,161 +1,123 @@
-
-
 // import { fetchCourse, fetchSubtopics } from "@/app/lib/actions";
-import { fetchCourse, fetchSubTopics, getQuizBySubtopicId } from "@/app/lib/actions";
+import { fetchCourse, fetchSubTopics, getQuizBySubtopicId, fetchSubscription } from "@/app/lib/actions";
 import Link from "next/link";
+import { getUserSession } from "@/app/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function CourseDetail({ params }) {
+  const { courseId } = await params;
+  const user = await getUserSession();
+  const userId = user.id;
+  if (!userId) redirect('/login');
+  const course = await fetchCourse(courseId);
 
-  const {courseId} = await params;
-  // console.log("slug: ", slug);
-    // console.log("parmas: ", params)
-    const course = await fetchCourse(courseId);
-    const subtopics = await fetchSubTopics(courseId);
-
-    // console.log("subtoipics: ", subtopics);
-    
-    // const quiz = await getQuizBySubtopicId();
-    // console.log("[fetched quiz]: ", quiz);
-    
-
-    // subtopicId -> id (Quiz) -> use that as quiz id to get the answers JSON size
-    // total number of questions -> questions.size (Quiz)
-    // attempted -> answers.size() (QuizAttempt)
-
-    // return <div>Jai Mata Di</div>;
-  
-    return (
-      <div className="p-4">
-        <h1 className="text-3xl font-bold">{course.title}</h1>
-        <p>{course.description}</p>
-
-        <div className="collapse collapse-arrow">
-          {subtopics.map(subtopic => (
-            <div key={subtopic.id} className="collapse-item">
-              <input type="checkbox" />
-              <div className="collapse-title text-xl font-medium">{subtopic.title}</div>
-              <div className="collapse-content">
-                <p>{subtopic.description}</p>
-                <button className="btn btn-primary">Take Quiz</button>
-                <button className="btn btn-secondary">View Notes</button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-
-        
-
-
-        <ul className="list bg-base-100 rounded-box shadow-md">
-
-        <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">Subtopics</li>
-
-          {subtopics.map(async (subtopic)=>{
-
-              const quiz = await getQuizBySubtopicId(subtopic.id);
-
-              const attemptsArray = quiz.attempts;
-              // const attemptsArray = JSON.parse(quiz.attempts);
-
-              
-              const recentAttempt = (attemptsArray) ? (attemptsArray[attemptsArray.length -1]):null;
-              
-              const attemptedQuestions =(recentAttempt) ? recentAttempt.answers.length:0;
-              // console.log("attemparray: ", recentAttempt.answers);
-
-              // console.log("quiz: ", quiz.questions);
-              // console.log("[course page quiz:] ", quiz.questions?.length);
-
-              const questions = JSON.parse(quiz.questions);
-              
-
-              const totalQuestions =(questions)? questions.length:100;
-
-              
-
-              return (
-                <li className="list-row">
-                
-
-                <div>
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" className="css-i6dzq1 size-8 rounded-box"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                </div>
-                <div>
-                  <div className="flex items-center">
-                    <span className="font-bold uppercase">
-                  {subtopic.title}
-
-                    </span>
-                  </div>
-                  <div className="text-xs uppercase font-semibold opacity-60">Quiz</div>
-                </div>
-            
-                <div className="flex items-center">
-            
-                <progress className="progress progress-secondary w-56" value={attemptedQuestions} max={totalQuestions}></progress>
-            
-                <Link href={`/courses/${courseId}/quiz/${subtopic.id}`}>
-                            <button className="btn btn-square btn-ghost">
-
-                              <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
-
-                            </button>
-                            </Link>
-                
-            
-                </div>
-              </li>
-              );
-
-          })}
-  
-  
-</ul>
-
-
-
-
-      </div>
-    );
+  if (!course) {
+    throw new Error('Course not found');
   }
 
-  // <progress className="progress progress-secondary w-56" value="70" max="100"></progress>
+  const subtopics = await fetchSubTopics(courseId);
 
+  return (
+    <div className="p-4">
+      <div className="container mx-auto max-w-5xl py-10 px-4">
 
-  // 
-  
-  
-//   <li className="list-row">
-//   <div><img className="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/4@94.webp"/></div>
-//   <div>
-//     <div>Ellie Beilish</div>
-//     <div className="text-xs uppercase font-semibold opacity-60">Bears of a fever</div>
-//   </div>
-//   <button className="btn btn-square btn-ghost">
-//     <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
-//   </button>
-//   {/* <button className="btn btn-square btn-ghost">
-//     <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></g></svg>
-//   </button> */}
-// </li>
+        {/* breadcrumbs */}
 
-// <li className="list-row">
-//   <div><img className="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/3@94.webp"/></div>
-//   <div>
-//     <div>Sabrino Gardener</div>
-//     <div className="text-xs uppercase font-semibold opacity-60">Cappuccino</div>
-//   </div>
+        <div className="text-sm breadcrumbs mb-4">
+          <ul>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/courses">Courses</Link></li>
+            <li>{course.title}</li>
+          </ul>
+        </div>
 
-//   <div className="flex items-center">
+        <h1 className="text-3xl font-bold text-primary mb-8">{course.title}</h1>
+        <div className="card bg-base-100 shadow-xl p-6">
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="w-full h-84 object-cover object-center rounded-lg mb-4" // Increased height to h-64 and added object-center
+          />
+          <p className="text-base text-base-content mb-4">{course.description}</p>
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-primary mb-4">Course Content</h2>
+            <p className="text-base text-base-content">
+              Welcome to {course.title}! This course includes videos, quizzes, and projects.
+            </p>
+          </div>
 
-//   <progress className="progress progress-secondary w-56" value="70" max="100"></progress>
+          <ul className="list bg-base-100 rounded-box shadow-md">
+            <li className="p-4 pb-2 text-xs opacity-60 tracking-wide"><u>Subtopics</u></li>
+            {subtopics.map(async (subtopic, index) => {
+              const quiz = await getQuizBySubtopicId(subtopic.id);
+              const attemptsArray = quiz.attempts;
+              const recentAttempt = attemptsArray ? attemptsArray[attemptsArray.length - 1] : null;
+              const attemptedQuestions = recentAttempt ? recentAttempt.answers.length : 0;
+              const questions = JSON.parse(quiz.questions);
+              const totalQuestions = questions ? questions.length : 100;
 
-//   <button className="btn btn-square btn-ghost">
-//     <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
-//   </button>
-  
-
-//   </div>
-// </li>
-
+              return (
+                <li className="list-row flex flex-col md:flex-row items-start md:items-center justify-between p-4 border-b last:border-b-0">
+                  <div className="flex items-center mb-2 md:mb-0">
+                    {/* <svg
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1 size-8 rounded-box mr-2"
+          >
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg> */}
+                    <div>
+                      <div className="flex items-center">
+                        <span className="font-bold uppercase text-sm md:text-base w-full break-words md:break-normal">
+                          {index + 1}. {subtopic.title}
+                        </span>
+                      </div>
+                      <div className="text-xs uppercase font-semibold opacity-60">Quiz</div>
+                    </div>
+                  </div>
+                  <div className="w-full md:w-auto flex flex-col md:flex-row items-center mt-2 md:mt-0">
+                    <progress
+                      className="progress progress-secondary w-full md:w-56 mb-2 md:mb-0 mr-0 md:mr-2"
+                      value={attemptedQuestions}
+                      max={totalQuestions}
+                    />
+                    <Link href={`/courses/${courseId}/quiz/${subtopic.id}`}>
+                      <button className="btn btn-square btn-ghost">
+                        <svg
+                          className="size-[1.2em]"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <g
+                            strokeLinejoin="round"
+                            strokeLinecap="round"
+                            strokeWidth="2"
+                            fill="none"
+                            stroke="currentColor"
+                          >
+                            <path d="M6 3L20 12 6 21 6 3z"></path>
+                          </g>
+                        </svg>
+                      </button>
+                    </Link>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}

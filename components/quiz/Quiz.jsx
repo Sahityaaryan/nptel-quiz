@@ -2,13 +2,16 @@
 import { useState, useEffect } from 'react';
 import QuizOption from './QuizOption';
 import QuizReport from './QuizReport';
+import Link from 'next/link';
+// import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function Quiz({ questions, subtopic, quiz }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [timer, setTimer] = useState(720);
   const [isFinished, setIsFinished] = useState(false);
-
+  const router = useRouter();
   const currentQuestion = questions[activeQuestion];
 
 
@@ -45,6 +48,23 @@ export default function Quiz({ questions, subtopic, quiz }) {
 
   return (
     <div className="container mx-auto max-w-3xl mt-10">
+
+            {/* breadcrumbs */}
+
+           
+<button onClick={() => router.back()} className="inline-flex items-center mb-4 btn btn-ghost text-sm">
+  <svg
+    className="w-4 h-4 mr-2"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+  </svg>
+  Go Back
+</button>
+
       <h2 className="text-2xl font-bold text-primary mb-4">Quiz</h2>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold text-base-content">

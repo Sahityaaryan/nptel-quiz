@@ -1,25 +1,26 @@
-'use client';
+'use client'
 
 import { useState } from 'react';
 import { courseCategory } from '@/data/category';
 import CourseCard from './CourseCard';
-import Link from 'next/link';
 
-export default function AllCourses({ courses }) {
+export default function MyCourses({ courses }) {
   const [selectedCategory, setSelectedCategory] = useState("all_courses");
 
   return (
-    <div className="min-h-screen bg-base-100 px-4 md:px-10 py-6">
-      {/* Breadcrumb Navigation */}
-      <div className="text-sm breadcrumbs mb-2">
+    <div className="container mx-auto px-4 py-6">
+      {/* Breadcrumbs */}
+      <div className="text-sm breadcrumbs mb-6">
         <ul>
-          <li><Link href="/">Home</Link></li>
-          <li>All Courses</li>
+          <li><a href="/" >Home</a></li>
+          <li><a href="/my-courses">Subscribed Courses</a></li>
         </ul>
       </div>
 
-      {/* Page Heading */}
-      <h1 className="text-3xl font-bold mb-6 text-primary text-center">Explore Our Courses</h1>
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-primary">Subscribed Courses</h1>
+      </div>
 
       {/* Category Filter */}
       <div className="flex justify-end items-center gap-4 mb-6">
@@ -35,13 +36,17 @@ export default function AllCourses({ courses }) {
         </select>
       </div>
 
-      {/* Course Grid */}
+      {/* Courses Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses
-          .filter((course) => (selectedCategory !== 'all_courses' ? course.category === selectedCategory : true))
-          .map((course) => (
-            <CourseCard key={course.id} course={course} toSubscribe={true} />
-          ))}
+        {courses.length > 0 ? (
+          courses.map((course) => (
+            <CourseCard key={course.id} course={course} toSubscribe={false} />
+          ))
+        ) : (
+          <p className="text-center text-gray-500 col-span-full">
+            No subscribed courses yet.
+          </p>
+        )}
       </div>
     </div>
   );
