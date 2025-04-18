@@ -11,7 +11,7 @@ export default async function RevisionHub() {
         </div>
         <input type="text" placeholder="Search" className="input input-bordered w-full my-4" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {revisionItems.map(item => (
+          {/* {revisionItems.map(item => (
             <div key={item.id} className="card w-full bg-base-100 shadow-xl">
               <div className="card-body">
                 <h2 className="card-title">{item.title}</h2>
@@ -19,7 +19,7 @@ export default async function RevisionHub() {
                 <button className="btn btn-primary">View</button>
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
     );
