@@ -31,12 +31,3 @@ export default function LoginPage() {
 }
 
 
-
-{/* <button
-        className="btn btn-primary"
-        onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-      >
-        Sign in with Google
-      </button> */}
-
-
