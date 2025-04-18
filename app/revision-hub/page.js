@@ -1,5 +1,5 @@
 export default async function RevisionHub() {
-    const revisionItems = await fetchRevisionItems(); // Server-side fetch
+    // const revisionItems = await fetchRevisionItems(); // Server-side fetch
   
     return (
       <div className="p-4">
