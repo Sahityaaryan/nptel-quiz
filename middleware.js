@@ -1,22 +1,17 @@
-import { withAuth } from 'next-auth/middleware';
-
-
-
-
+import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
   callbacks: {
     authorized: ({ token, req }) => {
       // console.log("url: ", req.nextUrl.pathname);
       // console.log("token: ", token);
-      if (!token) return false; 
+      if (!token) return false;
 
       const url = req.nextUrl.pathname;
 
-
       // Admin-only routes
-      if (url.startsWith('/admin')) {
-        return token.role === 'admin';
+      if (url.startsWith("/admin")) {
+        return token.role === "admin";
       }
 
       // Authenticated-only routes (any role)
@@ -24,10 +19,16 @@ export default withAuth({
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
 });
 
 export const config = {
-  matcher: ['/dashboard', '/my-courses', '/revision', '/checkout', '/admin/:path*'],
+  matcher: [
+    "/dashboard",
+    "/courses",
+    "/revision-hub",
+    "/checkout",
+    "/admin/:path*",
+  ],
 };

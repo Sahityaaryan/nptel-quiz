@@ -35,7 +35,6 @@ export const authOption = {
         where: { email: profile.email },
       });
 
-      // console.log("[user trying to signIn]: ", existingUser);
 
       if (!existingUser) {
         // Create new user if none exists

@@ -198,6 +198,17 @@ exports.Prisma.RevisionHubScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  courseId: 'courseId',
+  transactionId: 'transactionId',
+  amount: 'amount',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -220,7 +231,8 @@ exports.Prisma.ModelName = {
   Subscription: 'Subscription',
   UserCourseProgress: 'UserCourseProgress',
   QuizAttempt: 'QuizAttempt',
-  RevisionHub: 'RevisionHub'
+  RevisionHub: 'RevisionHub',
+  Payment: 'Payment'
 };
 
 /**

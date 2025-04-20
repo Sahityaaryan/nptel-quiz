@@ -1,47 +1,42 @@
 // lib/actions.js
-'use server';
+"use server";
 
 import prisma from "./prisma";
 import { getUserSession } from "./session";
 
-
-  
-  export async function getQuizBySubtopicId(subtopicId) {
-    if (!subtopicId) {
-      throw new Error('subtopicId is required');
-    }
-  
-    try {
-      const quiz = await prisma.quiz.findFirst({
-        where: {
-          subtopicId: subtopicId,
-        },
-        include: {
-          subtopic: true, // Include related Subtopic data
-          attempts: true, // Include related QuizAttempt data
-          revisionHub: true, // Include related RevisionHub data
-        },
-      });
-  
-      if (!quiz) {
-        throw new Error(`No quiz found for subtopicId: ${subtopicId}`);
-      }
-  
-      return quiz;
-    } catch (error) {
-      console.error('Error fetching quiz by subtopicId:', error);
-    }
+export async function getQuizBySubtopicId(subtopicId) {
+  if (!subtopicId) {
+    throw new Error("subtopicId is required");
   }
-  
-  
+
+  try {
+    const quiz = await prisma.quiz.findFirst({
+      where: {
+        subtopicId: subtopicId,
+      },
+      include: {
+        subtopic: true, // Include related Subtopic data
+        attempts: true, // Include related QuizAttempt data
+        revisionHub: true, // Include related RevisionHub data
+      },
+    });
+
+    if (!quiz) {
+      throw new Error(`No quiz found for subtopicId: ${subtopicId}`);
+    }
+
+    return quiz;
+  } catch (error) {
+    console.error("Error fetching quiz by subtopicId:", error);
+  }
+}
 
 /**
  * Fetches all available courses.
  */
 export async function fetchAllCourses() {
-
   try {
-    const courses = await prisma.course.findMany({ 
+    const courses = await prisma.course.findMany({
       select: {
         id: true,
         title: true,
@@ -68,7 +63,7 @@ export async function fetchAllCourses() {
  * @returns {Object} - An object with `subscribedCourses` and `quizzesCompleted`.
  */
 export async function fetchUserStats(userId) {
-    // console.log("user: ", userId);
+  // console.log("user: ", userId);
   const subscribedCourses = await prisma.subscription.count({
     where: { userId },
   });
@@ -87,6 +82,7 @@ export async function fetchCourse(courseId) {
   const course = await prisma.course.findUnique({
     where: { id: courseId },
     select: {
+      id: true,
       title: true,
       description: true,
       thumbnail: true,
@@ -121,7 +117,6 @@ export async function fetchSubTopics(courseId) {
   return subtopics;
 }
 
-
 /**
  * Adds a new course to the database.
  * @param {Object} data - Course details.
@@ -135,7 +130,15 @@ export async function fetchSubTopics(courseId) {
  * @returns {Promise<Object>} - The created course.
  */
 export async function addCourse(data) {
-  const { title, description, thumbnail, price, category, difficulty, duration } = data;
+  const {
+    title,
+    description,
+    thumbnail,
+    price,
+    category,
+    difficulty,
+    duration,
+  } = data;
   const course = await prisma.course.create({
     data: {
       title,
@@ -172,7 +175,6 @@ export async function addSubtopic(data) {
   return subtopic;
 }
 
-
 /**
  * Fetches subtopics for a given course ID.
  * @param {string} courseId - The ID of the course.
@@ -180,7 +182,7 @@ export async function addSubtopic(data) {
  */
 export async function getSubtopicsByCourse(courseId) {
   if (!courseId) {
-    throw new Error('Course ID is required');
+    throw new Error("Course ID is required");
   }
   const subtopics = await prisma.subtopic.findMany({
     where: { courseId },
@@ -211,39 +213,37 @@ export async function addQuiz(data) {
   return quiz;
 }
 
-export async function getSubtopicBySubtopicId(subtopicId){
+export async function getSubtopicBySubtopicId(subtopicId) {
   if (!subtopicId) {
-    throw new Error('subtopicId is required');
+    throw new Error("subtopicId is required");
   }
 
   try {
     const subtopic = await prisma.subtopic.findFirst({
       where: {
-        id: subtopicId
+        id: subtopicId,
       },
-      select:{
-        title:true,
+      select: {
+        title: true,
       },
-    })
-
+    });
 
     return subtopic;
   } catch (err) {
-    console.error('Error fetching subtopic by subtopicId:', err);
+    console.error("Error fetching subtopic by subtopicId:", err);
     // throw err;
   }
 }
 
-
 export async function saveQuizAttempt({ quizId, answers, score }) {
   try {
     const user = await getUserSession();
-    let {id} = await prisma.user.findUnique({
-      where:{
-        email: user.email
+    let { id } = await prisma.user.findUnique({
+      where: {
+        email: user.email,
       },
-      select:{id:true},
-    })
+      select: { id: true },
+    });
     const userId = id;
     const quizAttempt = await prisma.quizAttempt.create({
       data: {
@@ -255,52 +255,59 @@ export async function saveQuizAttempt({ quizId, answers, score }) {
       },
     });
 
-
     return quizAttempt;
   } catch (error) {
-    console.error('Error saving quiz attempt:', error);
+    console.error("Error saving quiz attempt:", error);
     throw error;
   }
 }
-
 
 // Create Razorpay order
 export async function createRazorpayOrder({ amount, currency }) {
   try {
     const response = await axios.post(
-      'https://api.razorpay.com/v1/orders',
+      "https://api.razorpay.com/v1/orders",
       {
         amount, // In paise
         currency,
         receipt: `receipt_${Date.now()}`,
-        notes: { app: 'Quiz Masalaa' },
+        notes: { app: "Quiz Masalaa" },
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString('base64')}`,
+          "Content-Type": "application/json",
+          Authorization: `Basic ${Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString("base64")}`,
         },
-      }
+      },
     );
     return response.data;
   } catch (error) {
-    console.error('Error creating Razorpay order:', error.response?.data || error.message);
-    throw new Error('Failed to create payment order');
+    console.error(
+      "Error creating Razorpay order:",
+      error.response?.data || error.message,
+    );
+    throw new Error("Failed to create payment order");
   }
 }
 
 // Verify payment and subscribe user to course
-export async function verifyAndSubscribe({ paymentId, orderId, signature, userId, courseId }) {
+export async function verifyAndSubscribe({
+  paymentId,
+  orderId,
+  signature,
+  userId,
+  courseId,
+}) {
   try {
     // Verify payment signature
     const secret = process.env.RAZORPAY_KEY_SECRET;
     const generatedSignature = crypto
-      .createHmac('sha256', secret)
+      .createHmac("sha256", secret)
       .update(`${orderId}|${paymentId}`)
-      .digest('hex');
-    
+      .digest("hex");
+
     if (generatedSignature !== signature) {
-      throw new Error('Invalid payment signature');
+      throw new Error("Invalid payment signature");
     }
 
     // Create Subscription
@@ -312,34 +319,146 @@ export async function verifyAndSubscribe({ paymentId, orderId, signature, userId
     });
 
     // Optionally log payment details (e.g., in a Payment model)
-    return { status: 'success', subscription };
+    return { status: "success", subscription };
   } catch (error) {
-    console.error('Error verifying payment or subscribing:', error);
+    console.error("Error verifying payment or subscribing:", error);
     throw error;
   }
 }
 
-export  async function fetchSubscription({ courseId}){
+// export async function fetchSubscription({ courseId }) {
+//   try {
+//     const user = await getUserSession();
+//     let { id } = await prisma.user.findUnique({
+//       where: {
+//         email: user.email,
+//       },
+//       select: { id: true },
+//     });
+//     const userId = id;
+//     const subscription = await prisma.subscription.findFirst({
+//       where: {
+//         userId,
+//         courseId,
+//       },
+//     });
 
-    try {
-      const user = await getUserSession();
-      let {id} = await prisma.user.findUnique({
-        where:{
-          email: user.email
-        },
-        select:{id:true},
-      })
-      const userId = id;
-      const subscription = await prisma.subscription.findFirst({
-        where: {
-          userId,
-          courseId,
-        },
-      });
+//     return subscription;
+//   } catch (err) {
+//     console.error("Error while fetching subscription: ", err);
+//     throw err;
+//   }
+// }
 
-      return subscription;
-    } catch (err) {
-      console.error('Error while fetching subscription: ', err);
-    throw err; 
-    }
+export async function getSubscribedCourses() {
+  try {
+    const user = await getUserSession();
+    let { id } = await prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+      select: { id: true },
+    });
+
+    const userId = id;
+
+    const courses = await prisma.course.findMany({
+      where: {
+        subscriptions: {
+          some: { userId, status: "active" },
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        thumbnail: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return courses;
+  } catch (err) {
+    console.error("Error fetching subscribed courses: ", err);
+    throw new Error("Failed to fetch subscribed courses");
+  }
+}
+
+export async function getSubtopicData({ subtopicId }) {
+  try {
+    const subtopic = await prisma.subtopic.findUnique({
+      where: { id: subtopicId },
+      select: {
+        notes: true,
+        quizzes: {
+          select: {
+            id: true,
+            title: true,
+            questions: true,
+          },
+        },
+      },
+    });
+    return {
+      quizzes: subtopic?.quizzes || [],
+      notes: subtopic?.notes || "",
+    };
+  } catch (err) {
+    console.error("Error fetching subtopic data:", err);
+    throw new Error("Failed to fetch subtopic data");
+  }
+}
+
+export async function fetchSubtopicUsingCourseId({ courseId }) {
+  try {
+    const user = await getUserSession();
+    console.log("user[fetchSubTopicsUsingCOurseId]: ", user);
+    let { id } = await prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+      select: { id: true },
+    });
+
+    const userId = id;
+
+    console.log("userId[fetchsubtopics]: ", userId);
+
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
+      include: {
+        subtopics: {
+          select: { id: true, title: true },
+        },
+        subscriptions: {
+          where: { userId, status: "active" },
+        },
+      },
+    });
+
+    return course;
+  } catch (err) {
+    console.error("Error fetching subtopic data:", err);
+    throw new Error("Failed to fetch subtopic data");
+  }
+}
+
+export async function seedSubs() {
+  try {
+    const subscription = await prisma.subscription.create({
+      data: {
+        userId: "67fe86183e35e090f6cfe96a",
+        courseId: "67ffcadae2cd908c0ccef066",
+        paymentId: "546706121825", // No payment system specified
+        orderId: "1",
+        status: "active",
+        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    return subscription;
+  } catch (e) {
+    console.error("Seeding failed:", e);
+  }
 }

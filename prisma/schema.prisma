@@ -34,6 +34,7 @@ model User {
   quizAttempts  QuizAttempt[]   // User's quiz attempts
   revisionHub   RevisionHub[]   // Saved quizzes/notes for revision
   role          Role            @default(public)
+  payments      Payment[]       @relation("UserPayments")
 }
 
 // Course model for public and subscribed courses
@@ -51,6 +52,7 @@ model Course {
   progress      UserCourseProgress[] // Progress tracking for users
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  payments      Payment[]       @relation("CoursePayments")
 }
 
 // Subtopic model for organizing course content
@@ -59,7 +61,7 @@ model Subtopic {
   courseId      String          @db.ObjectId
   course        Course          @relation(fields: [courseId], references: [id])
   title         String
-  description   String? 
+  description   String?
   notes         String?         // Text content or URL to PDF/image
   quizzes       Quiz[]          // Quizzes for this subtopic
   progress      UserCourseProgress[] // Progress specific to this subtopic
@@ -90,8 +92,9 @@ model Subscription {
   user          User            @relation(fields: [userId], references: [id])
   courseId      String          @db.ObjectId
   course        Course          @relation(fields: [courseId], references: [id])
-  paymentId     String?         // Razorpay payment ID
-  orderId       String?         // Razorpay order ID
+  paymentId     String?          @db.ObjectId @unique
+  payment       Payment?        @relation("SubscriptionPayment", fields: [paymentId], references: [id])
+  orderId       String?
   status        String          // e.g., "active", "expired"
   expiresAt     DateTime        // When subscription expires
   createdAt     DateTime        @default(now())
@@ -143,14 +146,16 @@ model RevisionHub {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+model Payment {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String          @db.ObjectId
+  user          User            @relation("UserPayments", fields: [userId], references: [id])
+  courseId      String          @db.ObjectId
+  course        Course          @relation("CoursePayments", fields: [courseId], references: [id])
+  transactionId String          @unique
+  amount        Float
+  status        String          @default("pending") // pending, verified, failed
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  subscription  Subscription?    @relation("SubscriptionPayment")
+}
