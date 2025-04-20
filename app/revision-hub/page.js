@@ -1,6 +1,6 @@
 import { getUserSession } from "../lib/session";
 import { redirect } from "next/navigation";
-import { getSubscribedCourses } from "@/app/lib/actions";
+import { getSubscribedCourses, getUserId } from "@/app/lib/actions";
 import Link from "next/link";
 import CourseCard from "@/components/courses/CourseCard";
 
@@ -10,7 +10,8 @@ export default async function RevisionHubPage() {
     redirect("/login");
   }
 
-  const courses = await getSubscribedCourses();
+  const userId = await getUserId(user);
+  const courses = await getSubscribedCourses({ userId });
 
   return (
     <div className="container mx-auto p-4 sm:p-6">

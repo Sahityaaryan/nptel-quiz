@@ -8,9 +8,9 @@
 - adding courses [done]
 - adding subtopic [done]
 - adding quiz [done]
-- fixing the payment over the site
-- creating revision hub
-- providing feature to review notes before taking quiz
+- fixing the payment over the site [done]
+- creating revision hub [done]
+- providing feature to review notes before taking quiz [done]
 - fixing the production site errors -> redirection of the authenticated site, appliicatioin error of the "/all-courses" , how a user can access the "/courses" without login.
 - adding the "demo" quiz part
 - creating an UI for the admin login and process

@@ -5,11 +5,12 @@ import SubtopicRevision from "@/components/revision-hub/SubtopicRevision";
 import prisma from "@/app/lib/prisma";
 import Link from "next/link";
 import { getUserSession } from "@/app/lib/session";
-import { fetchSubtopicUsingCourseId } from "@/app/lib/actions";
+import { fetchSubtopicUsingCourseId, getUserId } from "@/app/lib/actions";
 
 export default async function CourseRevisionPage({ params }) {
   // const session = await getSession();
   const user = getUserSession();
+  const userId = await getUserId(user);
 
   if (!user) {
     redirect("/login");
@@ -18,7 +19,10 @@ export default async function CourseRevisionPage({ params }) {
   const { courseId } = await params;
 
   // Fetch course details and subtopics
-  const course = await fetchSubtopicUsingCourseId({ courseId });
+  const course = await fetchSubtopicUsingCourseId({
+    courseId,
+    userId,
+  });
 
   if (!course || course.subscriptions.length === 0) {
     redirect("/revision-hub");

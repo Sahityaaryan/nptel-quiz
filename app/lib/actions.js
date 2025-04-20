@@ -349,19 +349,24 @@ export async function verifyAndSubscribe({
 //     throw err;
 //   }
 // }
+//
 
-export async function getSubscribedCourses() {
+export async function getUserId(user) {
   try {
-    const user = await getUserSession();
     let { id } = await prisma.user.findUnique({
       where: {
         email: user.email,
       },
       select: { id: true },
     });
+    return id;
+  } catch (err) {
+    console.error("Error fetching the user");
+  }
+}
 
-    const userId = id;
-
+export async function getSubscribedCourses({ userId }) {
+  try {
     const courses = await prisma.course.findMany({
       where: {
         subscriptions: {
@@ -379,7 +384,7 @@ export async function getSubscribedCourses() {
     return courses;
   } catch (err) {
     console.error("Error fetching subscribed courses: ", err);
-    throw new Error("Failed to fetch subscribed courses");
+    // throw new Error("Failed to fetch subscribed courses");
   }
 }
 
@@ -408,21 +413,8 @@ export async function getSubtopicData({ subtopicId }) {
   }
 }
 
-export async function fetchSubtopicUsingCourseId({ courseId }) {
+export async function fetchSubtopicUsingCourseId({ courseId, userId }) {
   try {
-    const user = await getUserSession();
-    console.log("user[fetchSubTopicsUsingCOurseId]: ", user);
-    let { id } = await prisma.user.findUnique({
-      where: {
-        email: user.email,
-      },
-      select: { id: true },
-    });
-
-    const userId = id;
-
-    console.log("userId[fetchsubtopics]: ", userId);
-
     const course = await prisma.course.findUnique({
       where: { id: courseId },
       include: {

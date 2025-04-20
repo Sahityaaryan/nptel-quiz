@@ -1,4 +1,4 @@
-import { fetchCourse, fetchSubtopicUsingCourseId } from "@/app/lib/actions";
+import { fetchCourse } from "@/app/lib/actions";
 import PaymentPage from "@/components/payment/PaymentPage";
 
 export default async function PaymentInterface({ params }) {
