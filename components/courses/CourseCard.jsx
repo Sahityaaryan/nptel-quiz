@@ -10,7 +10,7 @@ export default function CourseCard({ course, toSubscribe }) {
   };
 
   return (
-    <div className="card bg-base-100 w-full h-full flex flex-col shadow-sm rounded-lg overflow-hidden">
+    <div className="card bg-base-100 w-full h-full flex flex-col shadow-sm rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:z-10">
       <figure>
         <img
           src={course.thumbnail || "/default-course.jpg"}

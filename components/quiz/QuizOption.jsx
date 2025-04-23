@@ -1,5 +1,11 @@
-'use client';
-export default function QuizOption({ index, option, selectedAnswer, correctAnswer, onAnswerSelected }) {
+"use client";
+export default function QuizOption({
+  index,
+  option,
+  selectedAnswer,
+  correctAnswer,
+  onAnswerSelected,
+}) {
   const isSelected = selectedAnswer === option;
   const isCorrect = option === correctAnswer;
   const isIncorrect = isSelected && !isCorrect;
@@ -8,11 +14,13 @@ export default function QuizOption({ index, option, selectedAnswer, correctAnswe
     <div className="form-control m-3">
       <label
         className={`label cursor-pointer p-3 rounded-lg border ${
-          isSelected
+          selectedAnswer
             ? isCorrect
-              ? 'border-success bg-success bg-opacity-20'
-              : 'border-error bg-error bg-opacity-20'
-            : 'border-base-300'
+              ? "border-success bg-success bg-opacity-20"
+              : isIncorrect
+                ? "border-error bg-error bg-opacity-20"
+                : "border-base-300"
+            : "border-base-300"
         }`}
       >
         <input
