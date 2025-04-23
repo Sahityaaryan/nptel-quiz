@@ -3,108 +3,190 @@
 // import { get } from "next-auth";
 import { getUserSession } from "../session";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
+import nodemailer from "nodemailer";
 import prisma from "../prisma";
 
 export async function submitTransactionId(formData) {
-  const transactionId = formData.get("transactionId");
-  const courseId = formData.get("courseId");
-  const amount = parseFloat(formData.get("amount"));
+  try {
+    const transactionId = formData.get("transactionId");
+    const courseId = formData.get("courseId");
+    const amount = parseFloat(formData.get("amount"));
+    const userName = formData.get("userName"); // Replace with actual user data
+    const userEmail = formData.get("userEmail"); // Replace with actual user data
+    const courseTitle = formData.get("courseTitle");
 
-  // Get authenticated user
-  // const session = await getServerSession(authOptions);
-  const session_user = await getUserSession();
-  if (!session_user?.email) {
-    return { error: "Please sign in to complete the payment." };
-  }
+    // checking whether the form is recieving or Notes
 
-  const user = await prisma.user.findUnique({
-    where: { email: session_user.email },
-  });
-  if (!user) {
-    return { error: "User not found." };
-  }
+    // Validate inputs
+    if (!transactionId || transactionId.length !== 12) {
+      return {
+        success: false,
+        error: "Invalid Transaction ID. Must be 12 digits.",
+      };
+    }
+    if (!courseId || (!amount && amount != 0) || isNaN(amount)) {
+      return { success: false, error: "Invalid course or amount." };
+    }
+    if (!userName || !userEmail || !courseTitle) {
+      return { success: false, error: "Missing user or course details." };
+    }
 
-  // Validate Transaction ID format (12-digit alphanumeric)
-  const transactionIdRegex = /^[a-zA-Z0-9]{12}$/;
-  if (!transactionIdRegex.test(transactionId)) {
-    return {
-      error:
-        "Invalid Transaction ID. It must be a 12-digit alphanumeric code. Please check and try again or email support@quizmasala.com with proof of payment.",
-    };
-  }
-
-  // Check for duplicate Transaction ID
-  const existingPayment = await prisma.payment.findUnique({
-    where: { transactionId },
-  });
-  if (existingPayment) {
-    return {
-      error: "You are posting an old transaction",
-    };
-  }
-
-  // Verify course exists
-  const course = await prisma.course.findUnique({
-    where: { id: courseId },
-  });
-  if (!course) {
-    return { error: "Course not found." };
-  }
-
-  // Check if amount matches course price
-  if (course.price !== amount) {
-    return {
-      error:
-        "Payment amount does not match course price. Please email work.sahityaaryan@gmail.com with proof of payment.",
-    };
-  }
-
-  // Create Payment record (pending, awaiting manual verification)
-  const payment = await prisma.payment.create({
-    data: {
-      userId: user.id,
-      courseId,
-      transactionId,
-      amount,
-      status: "pending",
-    },
-  });
-
-  // For now, assume manual verification (replace with API check later)
-  // TODO: Manually verify Transaction ID in your UPI app/bank statement
-  // If valid, update payment status to 'verified' and create subscription
-  const isVerified = true; // Placeholder for manual check
-
-  if (isVerified) {
-    // Update payment status
-    await prisma.payment.update({
-      where: { id: payment.id },
-      data: { status: "verified" },
+    // Save payment to MongoDB
+    const payment = await prisma.payment.create({
+      data: {
+        user: { connect: { email: userEmail } }, // Assumes user exists
+        course: { connect: { id: courseId } },
+        transactionId,
+        amount,
+        status: "pending",
+      },
     });
 
-    // Create subscription
-    const subscription = await prisma.subscription.create({
-      data: {
+    // Set up Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_SERVER_USERNAME, // work.sahityaaryan@gmail.com
+        pass: process.env.SMTP_SERVER_PASSWORD, // App Password
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: userEmail,
+      to: process.env.SMTP_SERVER_USERNAME,
+      subject: `New User:${userName} Course Payment: ${courseTitle}`,
+      text: `
+        New payment received for course: ${courseTitle}
+        User Name: ${userName}
+        User Email: ${userEmail}
+        Transaction ID: ${transactionId}
+        Amount: ₹${amount.toFixed(2)}
+        Course ID: ${courseId}
+      `,
+      html: `
+        <h2>New Course Payment</h2>
+        <p><strong>Course:</strong> ${courseTitle}</p>
+        <p><strong>User Name:</strong> ${userName}</p>
+        <p><strong>User Email:</strong> ${userEmail}</p>
+        <p><strong>Transaction ID:</strong> ${transactionId}</p>
+        <p><strong>Amount:</strong> ₹${amount.toFixed(2)}</p>
+        <p><strong>Course ID:</strong> ${courseId}</p>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    // Return success message
+    return {
+      success: true,
+      message:
+        "Thank you for your payment! Please wait up to 1 hour to get access to the course. If it takes longer, email work.sahityaaryan@gmail.com.",
+    };
+  } catch (error) {
+    console.error("Error in submitTransactionId:", error);
+    return {
+      success: false,
+      error: "Failed to process payment. Please try again or contact support.",
+    };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function subscribeUserToCourse(formData) {
+  try {
+    const email = formData.get("email");
+    const courseId = formData.get("courseId");
+
+    // Validate inputs
+    if (!email || !email.includes("@")) {
+      return { success: false, error: "Invalid email address." };
+    }
+    if (!courseId) {
+      return { success: false, error: "Invalid course ID." };
+    }
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      return { success: false, error: "User not found." };
+    }
+
+    // Find pending payment
+    const payment = await prisma.payment.findFirst({
+      where: {
         userId: user.id,
         courseId,
-        paymentId: payment.id,
+        status: "pending",
+      },
+    });
+
+    if (!payment) {
+      return {
+        success: false,
+        error: "No pending payment found for this user and course.",
+      };
+    }
+
+    // Update payment status to verified
+    await prisma.payment.update({
+      where: {
+        id: payment.id,
+      },
+      data: {
+        status: "verified",
+        updatedAt: new Date(),
+      },
+    });
+
+    // Check for existing active subscription
+    const existingSubscription = await prisma.subscription.findFirst({
+      where: {
+        userId: user.id,
+        courseId,
         status: "active",
-        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+      },
+    });
+
+    if (existingSubscription) {
+      return {
+        success: false,
+        error: "User is already subscribed to this course.",
+      };
+    }
+
+    // Calculate expiration (1 year from now)
+    const expiresAt = new Date();
+    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+
+    // Create new subscription
+    await prisma.subscription.create({
+      data: {
+        user: { connect: { id: user.id } },
+        course: { connect: { id: courseId } },
+        payment: { connect: { id: payment.id } },
+        status: "active",
+        expiresAt,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     });
 
     return {
       success: true,
-      message: "Payment verified! You are now subscribed to the course.",
-      subscriptionId: subscription.id,
+      message: `User ${email} successfully subscribed to course ${courseId}.`,
     };
-  } else {
-    // Store as pending for manual review
+  } catch (error) {
+    console.error("Error in subscribeUserToCourse:", error);
     return {
-      error:
-        "Transaction ID submitted. Please wait for manual verification. If urgent, email support@quizmasala.com with proof of payment (e.g., UPI app screenshot).",
-      paymentId: payment.id,
+      success: false,
+      error: "Failed to subscribe user. Please try again or contact support.",
     };
+  } finally {
+    await prisma.$disconnect();
   }
 }

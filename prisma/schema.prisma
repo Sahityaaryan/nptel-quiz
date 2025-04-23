@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -21,141 +21,139 @@ enum Role {
 
 // User model for authentication and tracking subscriptions/progress
 
-
 // User model for authentication and tracking subscriptions/progress
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  email         String          @unique
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  email         String               @unique
   name          String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  subscriptions Subscription[]  // Courses the user is subscribed to
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  subscriptions Subscription[] // Courses the user is subscribed to
   progress      UserCourseProgress[] // Progress across courses/subtopics
-  quizAttempts  QuizAttempt[]   // User's quiz attempts
-  revisionHub   RevisionHub[]   // Saved quizzes/notes for revision
-  role          Role            @default(public)
-  payments      Payment[]       @relation("UserPayments")
+  quizAttempts  QuizAttempt[] // User's quiz attempts
+  revisionHub   RevisionHub[] // Saved quizzes/notes for revision
+  role          Role                 @default(public)
+  payments      Payment[]            @relation("UserPayments")
 }
 
 // Course model for public and subscribed courses
 model Course {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   description   String
-  thumbnail     String?         // URL to course image
-  price         Float           // Subscription price
-  category      String?         // e.g., DSA, Web Development
-  difficulty    String?         // e.g., Beginner, Intermediate
-  duration      Int?            // Estimated duration in minutes
-  subtopics     Subtopic[]      // Subtopics within the course
-  subscriptions Subscription[]  // Users subscribed to this course
+  thumbnail     String? // URL to course image
+  price         Float // Subscription price
+  category      String? // e.g., DSA, Web Development
+  difficulty    String? // e.g., Beginner, Intermediate
+  duration      Int? // Estimated duration in minutes
+  subtopics     Subtopic[] // Subtopics within the course
+  subscriptions Subscription[] // Users subscribed to this course
   progress      UserCourseProgress[] // Progress tracking for users
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  payments      Payment[]       @relation("CoursePayments")
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  payments      Payment[]            @relation("CoursePayments")
 }
 
 // Subtopic model for organizing course content
 model Subtopic {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  courseId      String          @db.ObjectId
-  course        Course          @relation(fields: [courseId], references: [id])
-  title         String
-  description   String?
-  notes         String?         // Text content or URL to PDF/image
-  quizzes       Quiz[]          // Quizzes for this subtopic
-  progress      UserCourseProgress[] // Progress specific to this subtopic
-  revisionHub   RevisionHub[]   // Notes saved for revision
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  courseId    String               @db.ObjectId
+  course      Course               @relation(fields: [courseId], references: [id])
+  title       String
+  description String?
+  notes       String? // Text content or URL to PDF/image
+  quizzes     Quiz[] // Quizzes for this subtopic
+  progress    UserCourseProgress[] // Progress specific to this subtopic
+  revisionHub RevisionHub[] // Notes saved for revision
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
 }
 
 // Quiz model for subtopic quizzes
 model Quiz {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  subtopicId    String          @db.ObjectId
-  subtopic      Subtopic        @relation(fields: [subtopicId], references: [id])
-  title         String          // e.g., "Arrays: Beginner Quiz"
-  questions     Json            // Array of { text, options, correctAnswer, explanation }
-  duration      Int?            // Optional timer in seconds
-  isPreview     Boolean         @default(false) // For demo quizzes (not in DB)
-  attempts      QuizAttempt[]   // User attempts for this quiz
-  revisionHub   RevisionHub[]   // Quizzes saved for revision
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  subtopicId  String        @db.ObjectId
+  subtopic    Subtopic      @relation(fields: [subtopicId], references: [id])
+  title       String // e.g., "Arrays: Beginner Quiz"
+  questions   Json // Array of { text, options, correctAnswer, explanation }
+  duration    Int? // Optional timer in seconds
+  isPreview   Boolean       @default(false) // For demo quizzes (not in DB)
+  attempts    QuizAttempt[] // User attempts for this quiz
+  revisionHub RevisionHub[] // Quizzes saved for revision
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 // Subscription model for tracking course purchases
 model Subscription {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String          @db.ObjectId
-  user          User            @relation(fields: [userId], references: [id])
-  courseId      String          @db.ObjectId
-  course        Course          @relation(fields: [courseId], references: [id])
-  paymentId     String?          @db.ObjectId @unique
-  payment       Payment?        @relation("SubscriptionPayment", fields: [paymentId], references: [id])
-  orderId       String?
-  status        String          // e.g., "active", "expired"
-  expiresAt     DateTime        // When subscription expires
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  courseId  String   @db.ObjectId
+  course    Course   @relation(fields: [courseId], references: [id])
+  paymentId String?  @unique @db.ObjectId
+  payment   Payment? @relation("SubscriptionPayment", fields: [paymentId], references: [id])
+  orderId   String?
+  status    String // e.g., "active", "expired"
+  expiresAt DateTime // When subscription expires
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // UserCourseProgress model for tracking progress
 model UserCourseProgress {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String          @db.ObjectId
-  user          User            @relation(fields: [userId], references: [id])
-  courseId      String          @db.ObjectId
-  course        Course          @relation(fields: [courseId], references: [id])
-  subtopicId    String?         @db.ObjectId
-  subtopic      Subtopic?       @relation(fields: [subtopicId], references: [id])
-  progress      Float           // Percentage completed (0-100)
-  quizzesCompleted Int          // Number of quizzes completed
-  lastAccessed  DateTime        @default(now()) // For recent courses
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String    @db.ObjectId
+  user             User      @relation(fields: [userId], references: [id])
+  courseId         String    @db.ObjectId
+  course           Course    @relation(fields: [courseId], references: [id])
+  subtopicId       String?   @db.ObjectId
+  subtopic         Subtopic? @relation(fields: [subtopicId], references: [id])
+  progress         Float // Percentage completed (0-100)
+  quizzesCompleted Int // Number of quizzes completed
+  lastAccessed     DateTime  @default(now()) // For recent courses
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 // QuizAttempt model for storing quiz results
 model QuizAttempt {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String          @db.ObjectId
-  user          User            @relation(fields: [userId], references: [id])
-  quizId        String          @db.ObjectId
-  quiz          Quiz            @relation(fields: [quizId], references: [id])
-  answers       Json            // Array of { questionIndex, selectedAnswer }
-  score         Float           // Percentage score (e.g., 80 for 8/10)
-  completedAt   DateTime        @default(now())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  quizId      String   @db.ObjectId
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
+  answers     Json // Array of { questionIndex, selectedAnswer }
+  score       Float // Percentage score (e.g., 80 for 8/10)
+  completedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // RevisionHub model for aggregating revision content
 model RevisionHub {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String          @db.ObjectId
-  user          User            @relation(fields: [userId], references: [id])
-  quizId        String?         @db.ObjectId
-  quiz          Quiz?           @relation(fields: [quizId], references: [id])
-  subtopicId    String?         @db.ObjectId
-  subtopic      Subtopic?       @relation(fields: [subtopicId], references: [id])
-  type          String          // "quiz" or "note"
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String    @db.ObjectId
+  user       User      @relation(fields: [userId], references: [id])
+  quizId     String?   @db.ObjectId
+  quiz       Quiz?     @relation(fields: [quizId], references: [id])
+  subtopicId String?   @db.ObjectId
+  subtopic   Subtopic? @relation(fields: [subtopicId], references: [id])
+  type       String // "quiz" or "note"
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
-
 model Payment {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String          @db.ObjectId
-  user          User            @relation("UserPayments", fields: [userId], references: [id])
-  courseId      String          @db.ObjectId
-  course        Course          @relation("CoursePayments", fields: [courseId], references: [id])
-  transactionId String          @unique
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @db.ObjectId
+  user          User          @relation("UserPayments", fields: [userId], references: [id])
+  courseId      String        @db.ObjectId
+  course        Course        @relation("CoursePayments", fields: [courseId], references: [id])
+  transactionId String        @unique
   amount        Float
-  status        String          @default("pending") // pending, verified, failed
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  subscription  Subscription?    @relation("SubscriptionPayment")
+  status        String        @default("pending") // pending, verified, failed
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  subscription  Subscription? @relation("SubscriptionPayment")
 }

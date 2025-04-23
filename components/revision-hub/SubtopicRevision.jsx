@@ -59,7 +59,7 @@ export default function SubtopicRevision({ courseId, subtopics }) {
         ) : selectedSubtopicId && quizData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
             {quizData.map((quiz) => {
-              const questions = JSON.parse(quiz.questions);
+              const questions = quiz.questions;
 
               return (
                 <div

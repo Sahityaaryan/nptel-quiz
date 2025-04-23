@@ -27,7 +27,7 @@ export default async function CourseDetail({ params }) {
       const quiz = await getQuizBySubtopicId(subtopic.id);
       const recentAttempt = quiz?.attempts?.at(-1) ?? null;
       const attemptedQuestions = recentAttempt?.answers?.length ?? 0;
-      const questions = quiz?.questions ? JSON.parse(quiz.questions) : [];
+      const questions = quiz?.questions ? quiz.questions : [];
       const totalQuestions = questions.length || 100;
 
       return {

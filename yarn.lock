@@ -472,28 +472,6 @@
   resolved "https://registry.npmjs.org/@panva/hkdf/-/hkdf-1.2.1.tgz"
   integrity sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==
 
-"@polar-sh/adapter-utils@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@polar-sh/adapter-utils/-/adapter-utils-0.2.0.tgz"
-  integrity sha512-dSP4E8BgHyaGevYAaTRlNW8rJjR91GXP7InV2+WZ2je2+Oq8PJKo7sLWbpkkJp9zmRx1I88f76rk0XmCY8Aivg==
-  dependencies:
-    "@polar-sh/sdk" "^0.32.11"
-
-"@polar-sh/nextjs@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/@polar-sh/nextjs/-/nextjs-0.4.0.tgz"
-  integrity sha512-D7UibCAo5mUnaNvD6/81PZtQkw44x3ga0lMtPNxbwO7t7LonwSiyKEBiwtgLyxErSvUTnevvay9Hone9t4KRxg==
-  dependencies:
-    "@polar-sh/adapter-utils" "0.2.0"
-    "@polar-sh/sdk" "^0.32.11"
-
-"@polar-sh/sdk@^0.32.11":
-  version "0.32.11"
-  resolved "https://registry.npmjs.org/@polar-sh/sdk/-/sdk-0.32.11.tgz"
-  integrity sha512-GmMDrWyJJnM45rByMRkY8U8DYbL2ggJNohhTc/9naMlGHnP3+RRgIG9IG6yxuXfQ1wljKyoViHAWCAGCvS3DPA==
-  dependencies:
-    standardwebhooks "^1.0.0"
-
 "@prisma/client@^6.6.0":
   version "6.6.0"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-6.6.0.tgz"
@@ -552,11 +530,6 @@
   version "1.11.0"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.11.0.tgz"
   integrity sha512-zxnHvoMQVqewTJr/W4pKjF0bMGiKJv1WX7bSrkl46Hg0QjESbzBROWK0Wg4RphzSOS5Jiy7eFimmM3UgMrMZbQ==
-
-"@stablelib/base64@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@stablelib/base64/-/base64-1.0.1.tgz"
-  integrity sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==
 
 "@swc/counter@0.1.3":
   version "0.1.3"
@@ -1679,11 +1652,6 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.npmjs.org/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
-fast-sha256@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/fast-sha256/-/fast-sha256-1.3.0.tgz"
-  integrity sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==
-
 fastq@^1.6.0:
   version "1.19.1"
   resolved "https://registry.npmjs.org/fastq/-/fastq-1.19.1.tgz"
@@ -1752,15 +1720,6 @@ form-data@^4.0.0:
     combined-stream "^1.0.8"
     es-set-tostringtag "^2.1.0"
     mime-types "^2.1.12"
-
-framer-motion@^12.7.4:
-  version "12.7.4"
-  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-12.7.4.tgz"
-  integrity sha512-jX0bPsTmU0oPZTYz/dVyD0dmOyEOEJvdn0TaZBE5I8g2GvVnnQnW9f65cJnoVfUkY3WZWNXGXnPbVA9YnaIfVA==
-  dependencies:
-    motion-dom "^12.7.4"
-    motion-utils "^12.7.2"
-    tslib "^2.4.0"
 
 fsevents@2.3.3:
   version "2.3.3"
@@ -2381,18 +2340,6 @@ minimist@^1.2.0, minimist@^1.2.6:
   resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.8.tgz"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
-motion-dom@^12.7.4:
-  version "12.7.4"
-  resolved "https://registry.npmjs.org/motion-dom/-/motion-dom-12.7.4.tgz"
-  integrity sha512-1ZUHAoSUMMxP6jPqyxlk9XUfb6NxMsnWPnH2YGhrOhTURLcXWbETi6eemoKb60Pe32NVJYduL4B62VQSO5Jq8Q==
-  dependencies:
-    motion-utils "^12.7.2"
-
-motion-utils@^12.7.2:
-  version "12.7.2"
-  resolved "https://registry.npmjs.org/motion-utils/-/motion-utils-12.7.2.tgz"
-  integrity sha512-XhZwqctxyJs89oX00zn3OGCuIIpVevbTa+u82usWBC6pSHUd2AoNWiYa7Du8tJxJy9TFbZ82pcn5t7NOm1PHAw==
-
 ms@^2.1.1, ms@^2.1.3:
   version "2.1.3"
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
@@ -2445,6 +2392,11 @@ next@15.3.0:
     "@next/swc-win32-arm64-msvc" "15.3.0"
     "@next/swc-win32-x64-msvc" "15.3.0"
     sharp "^0.34.1"
+
+nodemailer@^6.10.1:
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.10.1.tgz#cbc434c54238f83a51c07eabd04e2b3e832da623"
+  integrity sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==
 
 oauth@^0.9.15:
   version "0.9.15"
@@ -2948,14 +2900,6 @@ stable-hash@^0.0.5:
   version "0.0.5"
   resolved "https://registry.npmjs.org/stable-hash/-/stable-hash-0.0.5.tgz"
   integrity sha512-+L3ccpzibovGXFK+Ap/f8LOS0ahMrHTf3xu7mMLSpEGU0EO9ucaysSylKo9eRDFNhWve/y275iPmIZ4z39a9iA==
-
-standardwebhooks@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/standardwebhooks/-/standardwebhooks-1.0.0.tgz"
-  integrity sha512-BbHGOQK9olHPMvQNHWul6MYlrRTAOKn03rOe4A8O3CLWhNf4YHBqq2HJKKC+sfqpxiBY52pNeesD6jIiLDz8jg==
-  dependencies:
-    "@stablelib/base64" "^1.0.0"
-    fast-sha256 "^1.3.0"
 
 streamsearch@^1.1.0:
   version "1.1.0"

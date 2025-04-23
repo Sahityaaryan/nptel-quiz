@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { courseCategory } from '@/data/category';
-import CourseCard from './CourseCard';
-import Link from 'next/link';
+import { useState } from "react";
+import { courseCategory } from "@/data/category";
+import CourseCard from "./CourseCard";
+import Link from "next/link";
 
 export default function AllCourses({ courses }) {
   const [selectedCategory, setSelectedCategory] = useState("all_courses");
@@ -13,13 +13,17 @@ export default function AllCourses({ courses }) {
       {/* Breadcrumb Navigation */}
       <div className="text-sm breadcrumbs mb-2">
         <ul>
-          <li><Link href="/">Home</Link></li>
+          <li>
+            <Link href="/">Home</Link>
+          </li>
           <li>All Courses</li>
         </ul>
       </div>
 
       {/* Page Heading */}
-      <h1 className="text-3xl font-bold mb-6 text-primary text-center">Explore Our Courses</h1>
+      <h1 className="text-3xl font-bold mb-6 text-primary text-center">
+        Explore Our Courses
+      </h1>
 
       {/* Category Filter */}
       <div className="flex justify-end items-center gap-4 mb-6">
@@ -30,17 +34,28 @@ export default function AllCourses({ courses }) {
         >
           <option value="all_courses">All Courses</option>
           {courseCategory.map((category) => (
-            <option key={category.value} value={category.value}>{category.title}</option>
+            <option key={category.value} value={category.value}>
+              {category.title}
+            </option>
           ))}
         </select>
       </div>
 
-      {/* Course Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Course Flex Container */}
+      <div className="flex flex-wrap gap-6">
         {courses
-          .filter((course) => (selectedCategory !== 'all_courses' ? course.category === selectedCategory : true))
+          .filter((course) =>
+            selectedCategory !== "all_courses"
+              ? course.category === selectedCategory
+              : true,
+          )
           .map((course) => (
-            <CourseCard key={course.id} course={course} toSubscribe={true} />
+            <div
+              key={course.id}
+              className="w-full sm:w-[calc(100%-2rem)] lg:w-[calc(40%-2rem)] m-2"
+            >
+              <CourseCard course={course} toSubscribe={true} />
+            </div>
           ))}
       </div>
     </div>

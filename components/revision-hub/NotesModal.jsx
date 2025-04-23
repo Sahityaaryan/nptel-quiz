@@ -56,7 +56,7 @@ export default function NotesModal({ notes, onClose }) {
           <h3 className="text-lg sm:text-xl font-bold text-primary">Notes</h3>
 
           {/* Scrollable Iframe */}
-          <div className="w-full h-[60vh] overflow-auto rounded border">
+          <div className="w-full h-[60vh] lg:h-[80vh] overflow-auto rounded border">
             <iframe
               src={embedUrl}
               className="w-full h-full border-0"

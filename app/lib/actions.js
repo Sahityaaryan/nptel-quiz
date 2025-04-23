@@ -3,6 +3,80 @@
 
 import prisma from "./prisma";
 import { getUserSession } from "./session";
+import nodemailer from "nodemailer";
+
+import { DistributedComputing } from "@/data/cloudNetworkQuiz";
+
+import { Network_Security } from "@/data/computerNetworkQuiz";
+
+export async function seedCourse() {
+  try {
+    // let course = await prisma.course.create({
+    //   data: {
+    //     title: "Demo Cloud",
+    //     description: "This is a demo course for cloud computing",
+    //     thumbnail:
+    //       "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs3.amazonaws.com%2Fhoth.bizango%2Fimages%2F797280%2Fcloud-computing-msc_feature.jpg&f=1&nofb=1&ipt=e8754f40f8d29850b47ba7a7e8287bfff9ee640bfc72efc86d74f4aa5b281198",
+    //     price: 0,
+    //     category: "computer_science",
+    //     difficulty: "Easy",
+    //     duration: 12,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   },
+    // });
+
+    // let quiz = await prisma.quiz.create({
+    //   data: {
+    //     subtopic: { connect: { id: "68084076cb28394899a9eb89" } },
+    //     title: "Distributed Computing",
+    //     questions: DistributedComputing,
+    //     duration: 300,
+    //     isPreview: false,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   },
+    // });
+
+    // let subtopic = await prisma.subtopic.create({
+    //   data: {
+    //     course: { connect: { id: "68083f2a7498cb1bb807e1e8" } },
+    //     title: "Distributed Computing",
+    //     description: "",
+    //     notes:
+    //       "https://drive.google.com/file/d/1rMoprS3nEraJf4aB9ZAM-qwNRi0S2cI3/view?usp=sharing",
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   },
+    // });
+
+    // console.log('Subtopic created:', subtopic);
+    return quiz;
+  } catch (e) {
+    console.error("Seeding failed:", e);
+  }
+}
+
+export async function seedSubs() {
+  try {
+    const subscription = await prisma.subscription.create({
+      data: {
+        userId: "67fe86183e35e090f6cfe96a",
+        courseId: "67ffcadae2cd908c0ccef066",
+        paymentId: "546706121825", // No payment system specified
+        orderId: "1",
+        status: "active",
+        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    return subscription;
+  } catch (e) {
+    console.error("Seeding failed:", e);
+  }
+}
 
 export async function getQuizBySubtopicId(subtopicId) {
   if (!subtopicId) {
@@ -262,70 +336,6 @@ export async function saveQuizAttempt({ quizId, answers, score }) {
   }
 }
 
-// Create Razorpay order
-export async function createRazorpayOrder({ amount, currency }) {
-  try {
-    const response = await axios.post(
-      "https://api.razorpay.com/v1/orders",
-      {
-        amount, // In paise
-        currency,
-        receipt: `receipt_${Date.now()}`,
-        notes: { app: "Quiz Masalaa" },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString("base64")}`,
-        },
-      },
-    );
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Error creating Razorpay order:",
-      error.response?.data || error.message,
-    );
-    throw new Error("Failed to create payment order");
-  }
-}
-
-// Verify payment and subscribe user to course
-export async function verifyAndSubscribe({
-  paymentId,
-  orderId,
-  signature,
-  userId,
-  courseId,
-}) {
-  try {
-    // Verify payment signature
-    const secret = process.env.RAZORPAY_KEY_SECRET;
-    const generatedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(`${orderId}|${paymentId}`)
-      .digest("hex");
-
-    if (generatedSignature !== signature) {
-      throw new Error("Invalid payment signature");
-    }
-
-    // Create Subscription
-    const subscription = await prisma.subscription.create({
-      data: {
-        userId,
-        courseId,
-      },
-    });
-
-    // Optionally log payment details (e.g., in a Payment model)
-    return { status: "success", subscription };
-  } catch (error) {
-    console.error("Error verifying payment or subscribing:", error);
-    throw error;
-  }
-}
-
 // export async function fetchSubscription({ courseId }) {
 //   try {
 //     const user = await getUserSession();
@@ -434,23 +444,4 @@ export async function fetchSubtopicUsingCourseId({ courseId, userId }) {
   }
 }
 
-export async function seedSubs() {
-  try {
-    const subscription = await prisma.subscription.create({
-      data: {
-        userId: "67fe86183e35e090f6cfe96a",
-        courseId: "67ffcadae2cd908c0ccef066",
-        paymentId: "546706121825", // No payment system specified
-        orderId: "1",
-        status: "active",
-        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-
-    return subscription;
-  } catch (e) {
-    console.error("Seeding failed:", e);
-  }
-}
+// susbscribing action

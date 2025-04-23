@@ -2,21 +2,29 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import { submitTransactionId } from "@/actions/payment";
 import { submitTransactionId } from "@/app/lib/payments/actions";
 import Image from "next/image";
 
-export default function PaymentPage({ course }) {
+export default function PaymentPage({ course, user }) {
   const router = useRouter();
-  // const searchParams = useSearchParams();
-
   const courseId = course.id;
   const courseTitle = course.title;
   const amount = parseFloat(course.price);
 
   const [transactionId, setTransactionId] = useState("");
+  const [userName, setUserName] = useState(user.name);
+  const [userEmail, setUserEmail] = useState(user.email);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyTransactionId = () => {
+    if (transactionId) {
+      navigator.clipboard.writeText(transactionId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,12 +35,18 @@ export default function PaymentPage({ course }) {
     formData.append("transactionId", transactionId);
     formData.append("courseId", courseId);
     formData.append("amount", amount);
+    formData.append("userName", userName);
+    formData.append("userEmail", userEmail);
+    formData.append("courseTitle", courseTitle);
 
     const result = await submitTransactionId(formData);
 
+    console.log("result: ", result);
     if (result.success) {
-      setMessage({ type: "success", text: result.message });
-      setTimeout(() => router.push("/courses"), 3000);
+      setMessage({
+        type: "success",
+        text: result.message,
+      });
     } else {
       setMessage({ type: "error", text: result.error });
     }
@@ -52,12 +66,13 @@ export default function PaymentPage({ course }) {
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2">Step 1: Scan QR Code</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Use any UPI app (BHIM, PhonePe, Google Pay, etc.) to scan the QR
-              code below and pay ₹{amount.toFixed(2)}.
+              {/* Use any UPI app (BHIM, PhonePe, Google Pay, etc.) to scan the QR
+              code or send payment to UPI ID: <strong>sahityaaryan@upi</strong>{" "}
+              (replace with your actual UPI ID). */}
             </p>
             <div className="flex justify-center">
               <Image
-                src="/payment/qr-code.jpeg" // Replace with your UPI QR code
+                src="/payment/qr-code-2.jpeg"
                 alt="UPI QR Code"
                 width={200}
                 height={200}
@@ -67,26 +82,65 @@ export default function PaymentPage({ course }) {
           </div>
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2">
-              Step 2: Enter Transaction ID
+              Step 2: Enter Payment Details
             </h3>
             <p className="text-sm text-gray-600 mb-4">
-              After payment, enter the 12-digit Transaction ID (UTR) from your
-              UPI app.
+              Provide your details and the 12-digit Transaction ID (UTR) from
+              your UPI app.
             </p>
             <form onSubmit={handleSubmit}>
-              <div className="form-control">
+              <div className="form-control mb-4">
                 <label className="label">
-                  <span className="label-text">Transaction ID</span>
+                  <span className="label-text">Full Name</span>
                 </label>
                 <input
                   type="text"
-                  value={transactionId}
-                  onChange={(e) => setTransactionId(e.target.value)}
-                  placeholder="Enter 12-digit Transaction ID"
+                  value={user.name}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Enter your full name"
                   className="input input-bordered"
                   required
                   disabled={loading}
                 />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Email</span>
+                </label>
+                <input
+                  type="email"
+                  value={user.email}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="input input-bordered"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Transaction ID</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={transactionId}
+                    onChange={(e) => setTransactionId(e.target.value)}
+                    placeholder="Enter 12-digit Transaction ID"
+                    className="input input-bordered flex-grow"
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-sm"
+                    onClick={handleCopyTransactionId}
+                    disabled={!transactionId || loading}
+                    title="Copy Transaction ID"
+                  >
+                    {copied ? "Copied!" : "Copy"}
+                  </button>
+                </div>
               </div>
               <button
                 type="submit"
@@ -115,7 +169,7 @@ export default function PaymentPage({ course }) {
                 href="mailto:work.sahityaaryan@gmail.com"
                 className="link link-primary"
               >
-                {"work.sahityaaryan@gmail.com"}
+                work.sahityaaryan@gmail.com
               </a>
               . Include your email, course title, and Transaction ID.
             </p>

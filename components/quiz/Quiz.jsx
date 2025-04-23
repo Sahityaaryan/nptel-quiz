@@ -1,10 +1,10 @@
-'use client';
-import { useState, useEffect } from 'react';
-import QuizOption from './QuizOption';
-import QuizReport from './QuizReport';
-import Link from 'next/link';
+"use client";
+import { useState, useEffect } from "react";
+import QuizOption from "./QuizOption";
+import QuizReport from "./QuizReport";
+import Link from "next/link";
 // import { useRouter } from 'next/router';
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function Quiz({ questions, subtopic, quiz }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
@@ -14,8 +14,8 @@ export default function Quiz({ questions, subtopic, quiz }) {
   const router = useRouter();
   const currentQuestion = questions[activeQuestion];
 
-
   useEffect(() => {
+    console.log("active: ", currentQuestion);
     if (timer > 0 && !isFinished) {
       const countdown = setInterval(() => setTimer((prev) => prev - 1), 1000);
       return () => clearInterval(countdown);
@@ -27,7 +27,10 @@ export default function Quiz({ questions, subtopic, quiz }) {
   const handleAnswer = (index, answer) => {
     setSelectedAnswers((prev) => ({
       ...prev,
-      [activeQuestion]: { answer, isCorrect: answer === currentQuestion.correctAnswer },
+      [activeQuestion]: {
+        answer,
+        isCorrect: answer === currentQuestion.correctAnswer,
+      },
     }));
   };
   const handleNext = () => {
@@ -39,42 +42,53 @@ export default function Quiz({ questions, subtopic, quiz }) {
     }
   };
 
-  const addLeadingZero = (number) => number < 10 ? `0${number}` : number;
-
+  const addLeadingZero = (number) => (number < 10 ? `0${number}` : number);
 
   if (isFinished) {
-    return  <QuizReport questions={questions} quiz={quiz} selectedAnswers={selectedAnswers} />;
+    return (
+      <QuizReport
+        questions={questions}
+        quiz={quiz}
+        selectedAnswers={selectedAnswers}
+      />
+    );
   }
 
   return (
     <div className="container mx-auto max-w-3xl mt-10">
+      {/* breadcrumbs */}
 
-            {/* breadcrumbs */}
-
-           
-<button onClick={() => router.back()} className="inline-flex items-center mb-4 btn btn-ghost text-sm">
-  <svg
-    className="w-4 h-4 mr-2"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-  </svg>
-  Go Back
-</button>
+      <button
+        onClick={() => router.back()}
+        className="inline-flex items-center mb-4 btn btn-ghost text-sm"
+      >
+        <svg
+          className="w-4 h-4 mr-2"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Go Back
+      </button>
 
       <h2 className="text-2xl font-bold text-primary mb-4">Quiz</h2>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold text-base-content">
-          Subtopic: {subtopic || 'Unknown Subtopic'}
+          Subtopic: {subtopic || "Unknown Subtopic"}
         </h3>
       </div>
       <div className="card bg-base-100 shadow-xl p-6">
         <div className="flex justify-between items-center mb-4">
           <div className="text-2xl font-bold text-primary">
-            Question {addLeadingZero(activeQuestion + 1)}/{addLeadingZero(questions.length)}
+            Question {addLeadingZero(activeQuestion + 1)}/
+            {addLeadingZero(questions.length)}
           </div>
           <div className="flex items-center gap-2">
             <svg
@@ -91,11 +105,14 @@ export default function Quiz({ questions, subtopic, quiz }) {
               />
             </svg>
             <span className="text-lg font-semibold text-primary">
-  {addLeadingZero(Math.floor(timer / 60))}:{addLeadingZero(timer % 60)}
-</span>
+              {addLeadingZero(Math.floor(timer / 60))}:
+              {addLeadingZero(timer % 60)}
+            </span>
           </div>
         </div>
-        <h3 className="text-xl font-semibold mb-4">{currentQuestion.question}</h3>
+        <h3 className="text-xl font-semibold mb-4">
+          {currentQuestion.questions}
+        </h3>
         <form>
           {currentQuestion.options.map((option, index) => (
             <QuizOption
@@ -114,7 +131,7 @@ export default function Quiz({ questions, subtopic, quiz }) {
             disabled={!selectedAnswers[activeQuestion]}
             className="btn btn-primary"
           >
-            {activeQuestion === questions.length - 1 ? 'Finish' : 'Next'}
+            {activeQuestion === questions.length - 1 ? "Finish" : "Next"}
           </button>
         </div>
       </div>

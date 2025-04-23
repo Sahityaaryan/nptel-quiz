@@ -1,4 +1,5 @@
-import { fetchAllCourses } from '@/app/lib/actions';
+import { fetchAllCourses } from "@/app/lib/actions";
+import Link from "next/link";
 
 export default async function LandingPage() {
   const featuredCourses = await fetchAllCourses();
@@ -7,7 +8,8 @@ export default async function LandingPage() {
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
       <section className="hero relative rounded-lg  text-neutral-content overflow-hidden">
-        <div className="absolute inset-0 bg-black/30 z-0" /> {/* Subtle overlay */}
+        <div className="absolute inset-0 bg-black/30 z-0" />{" "}
+        {/* Subtle overlay */}
         <div className="hero-content flex-col text-center py-20 z-10">
           <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight mb-4">
             Welcome to <span className="text-accent">Quiz Masalaa</span>
@@ -15,7 +17,10 @@ export default async function LandingPage() {
           <p className="mb-6 text-lg sm:text-xl max-w-2xl">
             Your last-minute tuition platform. Learn quickly. Learn smartly.
           </p>
-          <a href="/all-courses" className="btn btn-accent btn-lg hover:btn-accent-focus transition duration-300">
+          <a
+            href="/all-courses"
+            className="btn btn-accent btn-lg hover:btn-accent-focus transition duration-300"
+          >
             Explore Courses
           </a>
         </div>
@@ -24,7 +29,9 @@ export default async function LandingPage() {
       {/* Featured Courses Section */}
       <section className="px-4 sm:px-6 py-12 bg-base-100 flex-grow">
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-bold text-primary">Featured Courses</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary">
+            Featured Courses
+          </h2>
           <p className="text-base sm:text-lg text-base-content/70 mt-2">
             Hand-picked gems to boost your prep
           </p>
@@ -51,15 +58,19 @@ export default async function LandingPage() {
                   </figure>
                 )}
                 <div className="card-body">
-                  <h2 className="card-title text-xl font-semibold text-primary">{course.title}</h2>
-                  <p className="text-base text-base-content/80 line-clamp-3">{course.description}</p>
+                  <h2 className="card-title text-xl font-semibold text-primary">
+                    {course.title}
+                  </h2>
+                  <p className="text-base text-base-content/80 line-clamp-3">
+                    {course.description}
+                  </p>
                   <div className="card-actions justify-end">
-                    <a
-                      href={`/courses/${course.id}`}
+                    <Link
+                      href={`/all-courses `}
                       className="btn btn-outline btn-primary btn-sm hover:btn-primary"
                     >
                       View Details
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -118,11 +129,27 @@ export default async function LandingPage() {
           */}
           <p className="text-sm">© 2025 Quiz Masalaa. All rights reserved.</p>
           <div className="text-right text-sm text-base-content/70 mt-2">
-            {/* Revamped by Aryan devs */}
+            <p className="text-sm text-gray-500 flex items-center gap-1">
+              Made with
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-red-400"
+              >
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              </svg>
+              by Sahitya
+            </p>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-
