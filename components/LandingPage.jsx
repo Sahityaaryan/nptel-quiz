@@ -67,7 +67,7 @@ export default async function LandingPage() {
                   <div className="card-actions justify-end">
                     <Link
                       href={`/all-courses `}
-                      className="btn btn-outline btn-accent btn-sm hover:btn-primary"
+                      className="btn btn-outline btn-accent btn-sm hover:btn-accent"
                     >
                       View Details
                     </Link>
