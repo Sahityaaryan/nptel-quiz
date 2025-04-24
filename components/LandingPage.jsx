@@ -134,7 +134,7 @@ export default async function LandingPage() {
               <h3 className="text-lg font-semibold text-secondary mb-2">
                 Developer's Socials
               </h3>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 justify-center">
                 <Link
                   href="https://github.com/Sahityaaryan"
                   target="_blank"
@@ -172,7 +172,7 @@ export default async function LandingPage() {
               <h3 className="text-lg font-semibold text-secondary mb-2">
                 Founder's Socials
               </h3>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 justify-center">
                 <Link
                   href="https://github.com/Nauser-Alam"
                   target="_blank"
