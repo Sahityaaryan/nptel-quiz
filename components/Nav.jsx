@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Nav() {
   return (
-    <div className="navbar bg-base-100 shadow-sm">
-      <div className="flex-1">
+    <div className="navbar bg-base-100 shadow-sm flex justify-center">
+      <div className="flex-1 hidden sm:inline">
         <Link href="/" className="btn btn-ghost text-xl">
           QuizMasalaa
         </Link>
