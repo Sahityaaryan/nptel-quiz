@@ -92,7 +92,7 @@ export default function QuizReport({ questions, selectedAnswers, quiz }) {
           <div className="space-y-4">
             {questions.map((q, index) => (
               <div key={index} className="border p-4 rounded-lg">
-                <p className="font-semibold">{q.question}</p>
+                <p className="font-semibold">{q.questions}</p>
                 <p className="text-sm">
                   Your Answer:{" "}
                   {selectedAnswers[index]?.answer || "Not answered"}

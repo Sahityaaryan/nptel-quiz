@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { submitTransactionId } from "@/app/lib/payments/actions";
 import Image from "next/image";
+import Router from "next/router";
 
 export default function PaymentPage({ course, user }) {
   const router = useRouter();
@@ -57,6 +58,12 @@ export default function PaymentPage({ course, user }) {
     <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
       <div className="card w-full max-w-2xl bg-base-100 shadow-xl">
         <div className="card-body">
+          <button
+            onClick={() => router.back()}
+            className="btn btn-outline hover:btn-secondary btn-sm mb-4"
+          >
+            Go Back
+          </button>
           <h2 className="card-title text-2xl mb-4">
             Complete Payment for {courseTitle}
           </h2>
