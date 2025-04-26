@@ -20,17 +20,9 @@ export default function NotesModal({ notes, onClose }) {
     };
     document.addEventListener("keydown", handleKeyDown);
 
-    // // Clear clipboard periodically to disrupt PrintScreen
-    // const clearClipboard = setInterval(() => {
-    //   navigator.clipboard.writeText("").catch((err) => {
-    //     console.error("Failed to clear clipboard:", err);
-    //   });
-    // }, 1000);
-
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
       document.removeEventListener("keydown", handleKeyDown);
-      // clearInterval(clearClipboard);
     };
   }, []);
 
@@ -53,7 +45,38 @@ export default function NotesModal({ notes, onClose }) {
 
         {/* Modal Content */}
         <div className="relative z-30 space-y-4">
+          {/* Top Section: Close Button and Made with Love */}
+
           <h3 className="text-lg sm:text-xl font-bold text-primary">Notes</h3>
+
+          <div className="flex justify-between items-end">
+            <div className="flex-1 text-center">
+              <p className="text-sm text-gray-500 flex items-center justify-center gap-1">
+                Made with
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-red-400"
+                >
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                </svg>
+                by Sahitya
+              </p>
+            </div>
+            <button
+              className="btn btn-primary btn-sm absolute top-2 right-2"
+              onClick={onClose}
+            >
+              ✕
+            </button>
+          </div>
 
           {/* Scrollable Iframe */}
           <div className="w-full h-[60vh] lg:h-[80vh] overflow-auto rounded border">
@@ -69,30 +92,6 @@ export default function NotesModal({ notes, onClose }) {
             Content protected by Quiz Masalaa. Unauthorized reproduction is
             prohibited.
           </p>
-          <p className="text-sm text-gray-500 flex items-center gap-1">
-            Made with
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-red-400"
-            >
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-            </svg>
-            by Sahitya
-          </p>
-
-          <div className="modal-action">
-            <button className="btn btn-primary" onClick={onClose}>
-              Close
-            </button>
-          </div>
         </div>
       </div>
     </div>
