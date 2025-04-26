@@ -82,7 +82,7 @@ export async function submitTransactionId(formData) {
     return {
       success: true,
       message:
-        "Thank you for your payment! Please wait up to 1 hour to get access to the course. If it takes longer, email work.sahityaaryan@gmail.com.",
+        "Thank you for your payment! Please wait up to 1 hour to get access to the course as for now you can go back. If it takes longer, email work.sahityaaryan@gmail.com.",
     };
   } catch (error) {
     console.error("Error in submitTransactionId:", error);
