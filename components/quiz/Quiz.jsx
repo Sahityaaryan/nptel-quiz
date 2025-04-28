@@ -112,7 +112,9 @@ export default function Quiz({ questions, subtopic, quiz }) {
           </div>
         </div>
         <h3 className="text-xl font-semibold mb-4">
-          {currentQuestion.questions}
+          {currentQuestion.questions
+            ? currentQuestion.questions
+            : currentQuestion.question}
         </h3>
         <form>
           {currentQuestion?.options &&
