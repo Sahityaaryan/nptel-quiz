@@ -45,24 +45,26 @@ export default async function RevisionHubPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.length > 0 ? (
           courses.map((course) => (
-            <div className="card bg-base-100 w-full h-full flex flex-col shadow-sm rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:z-10">
-              <figure>
-                <img
-                  src={course.thumbnail || "/default-course.jpg"}
-                  alt={course.title}
-                  className="w-full h-48 object-cover"
-                />
-              </figure>
-              <div className="card-body flex flex-col flex-grow">
-                <h2 className="card-title mx-3">
-                  {course.title}
-                  <div className="badge badge-secondary">NEW</div>
-                </h2>
-                <p className="m-3 flex-grow">
-                  {truncateDescription(course.description)}
-                </p>
+            <Link href={`revision-hub/${course.id}`}>
+              <div className="card bg-base-100 w-full h-full flex flex-col shadow-sm rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:z-10">
+                <figure>
+                  <img
+                    src={course.thumbnail || "/default-course.jpg"}
+                    alt={course.title}
+                    className="w-full h-48 object-cover"
+                  />
+                </figure>
+                <div className="card-body flex flex-col flex-grow">
+                  <h2 className="card-title mx-3">
+                    {course.title}
+                    <div className="badge badge-secondary">NEW</div>
+                  </h2>
+                  <p className="m-3 flex-grow">
+                    {truncateDescription(course.description)}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))
         ) : (
           <div className="flex flex-col w-screen md:w-[60vw] items-center justify-center gap-4 min-h-[50vh]">

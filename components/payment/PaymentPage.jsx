@@ -42,7 +42,7 @@ export default function PaymentPage({ course, user }) {
 
     const result = await submitTransactionId(formData);
 
-    console.log("result: ", result);
+    // console.log("result: ", result);
     if (result.success) {
       setMessage({
         type: "success",

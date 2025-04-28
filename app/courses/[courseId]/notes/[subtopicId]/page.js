@@ -14,7 +14,7 @@ export default function NotesViewer({ params }) {
         const data = await getSubtopicData({
           subtopicId,
         });
-        console.log("data: ", data);
+        // console.log("data: ", data);
         setNotes(data.notes);
       } catch (err) {
         console.error("Error fetching subtopic data:", err);

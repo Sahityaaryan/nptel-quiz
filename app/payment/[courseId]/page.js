@@ -11,7 +11,6 @@ export default async function PaymentInterface({ params }) {
 
   if (!user) {
     redirect("/login");
-  }
 
   return (
     <>
