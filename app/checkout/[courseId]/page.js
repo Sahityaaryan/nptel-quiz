@@ -4,7 +4,6 @@ import SelectedCourse from "@/components/payment/SelectedCourse";
 import { fetchCourse } from "@/app/lib/actions";
 import { getUserSession } from "@/app/lib/session";
 import { redirect } from "next/navigation";
-import Signature from "@/components/ui/Signature";
 
 // Simulated course data (replace with real fetch, e.g., prisma.course.findUnique)
 // const getCourseData = async (courseId) => {
@@ -41,8 +40,6 @@ export default async function CourseCheckoutPage({ params }) {
           <SelectedCourse course={course} />
         </div>
       </div>
-
-      <Signature />
     </div>
   );
 }

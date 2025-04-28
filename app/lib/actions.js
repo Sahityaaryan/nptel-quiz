@@ -176,19 +176,23 @@ export async function fetchCourse(courseId) {
  * @returns {Array} - An array of subtopics with their details.
  */
 export async function fetchSubTopics(courseId) {
-  const subtopics = await prisma.subtopic.findMany({
-    where: { courseId },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      notes: true,
-      _count: {
-        select: { quizzes: true },
+  try {
+    const subtopics = await prisma.subtopic.findMany({
+      where: { courseId },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        notes: true,
+        _count: {
+          select: { quizzes: true },
+        },
       },
-    },
-  });
-  return subtopics;
+    });
+    return subtopics;
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**

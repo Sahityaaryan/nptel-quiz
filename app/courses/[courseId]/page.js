@@ -20,6 +20,7 @@ export default async function CourseDetail({ params }) {
   if (!course) throw new Error("Course not found");
 
   const subtopics = await fetchSubTopics(courseId);
+  // console.log("subtopics: ", subtopics);
 
   // Preprocess quizzes for each subtopic
   const subtopicsWithQuiz = await Promise.all(

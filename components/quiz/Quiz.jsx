@@ -14,8 +14,9 @@ export default function Quiz({ questions, subtopic, quiz }) {
   const router = useRouter();
   const currentQuestion = questions[activeQuestion];
 
+  console.log("active: ", currentQuestion);
+
   useEffect(() => {
-    console.log("active: ", currentQuestion);
     if (timer > 0 && !isFinished) {
       const countdown = setInterval(() => setTimer((prev) => prev - 1), 1000);
       return () => clearInterval(countdown);
@@ -114,16 +115,28 @@ export default function Quiz({ questions, subtopic, quiz }) {
           {currentQuestion.questions}
         </h3>
         <form>
-          {currentQuestion.options.map((option, index) => (
-            <QuizOption
-              key={index}
-              index={index}
-              option={option}
-              selectedAnswer={selectedAnswers[activeQuestion]?.answer}
-              correctAnswer={currentQuestion.correctAnswer}
-              onAnswerSelected={handleAnswer}
-            />
-          ))}
+          {currentQuestion?.options &&
+            currentQuestion?.options.map((option, index) => (
+              <QuizOption
+                key={index}
+                index={index}
+                option={option}
+                selectedAnswer={selectedAnswers[activeQuestion]?.answer}
+                correctAnswer={currentQuestion.correctAnswer}
+                onAnswerSelected={handleAnswer}
+              />
+            ))}
+          {currentQuestion?.answers &&
+            currentQuestion?.answers.map((option, index) => (
+              <QuizOption
+                key={index}
+                index={index}
+                option={option}
+                selectedAnswer={selectedAnswers[activeQuestion]?.answer}
+                correctAnswer={currentQuestion.correctAnswer}
+                onAnswerSelected={handleAnswer}
+              />
+            ))}
         </form>
         <div className="flex justify-end mt-6">
           <button
