@@ -10,6 +10,11 @@ export default async function RevisionHubPage() {
     redirect("/login");
   }
 
+  const truncateDescription = (text) => {
+    if (text.length <= 150) return text;
+    return text.slice(0, 150) + "...";
+  };
+
   const userId = await getUserId(user);
   const courses = await getSubscribedCourses({ userId });
 
@@ -37,29 +42,40 @@ export default async function RevisionHubPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.length > 0 ? (
           courses.map((course) => (
-            <Link key={course.id} href={`/revision-hub/${course.id}`}>
-              <div className="card bg-base-100 w-96 shadow-xl">
-                <figure>
-                  <img src={course.thumbnail} alt={course.title} />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title mx-3">
-                    {course.title}
-                    <div className="badge badge-secondary">NEW</div>
-                  </h2>
-                  <p className="m-3">{course.description}</p>
-                  <div className="w-full"></div>
-                </div>
+            <div className="card bg-base-100 w-full h-full flex flex-col shadow-sm rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:z-10">
+              <figure>
+                <img
+                  src={course.thumbnail || "/default-course.jpg"}
+                  alt={course.title}
+                  className="w-full h-48 object-cover"
+                />
+              </figure>
+              <div className="card-body flex flex-col flex-grow">
+                <h2 className="card-title mx-3">
+                  {course.title}
+                  <div className="badge badge-secondary">NEW</div>
+                </h2>
+                <p className="m-3 flex-grow">
+                  {truncateDescription(course.description)}
+                </p>
               </div>
-            </Link>
+            </div>
           ))
         ) : (
-          <p className="text-base-content col-span-full">
-            No subscribed courses found. Explore courses to get started!
-          </p>
+          <div className="flex flex-col w-screen md:w-[60vw] items-center justify-center gap-4 min-h-[50vh]">
+            <p className="text-center text-gray-500 text-lg font-medium">
+              No subscribed courses yet.
+            </p>
+
+            <Link href="/all-courses">
+              <button className="px-6 py-2 bg-secondary text-white rounded-xl hover:bg-secondary/90 transition-all duration-200">
+                Explore Courses
+              </button>
+            </Link>
+          </div>
         )}
       </div>
     </div>

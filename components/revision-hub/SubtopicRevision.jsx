@@ -72,7 +72,10 @@ export default function SubtopicRevision({ courseId, subtopics }) {
                       {questions.map((question, qIndex) => (
                         <div key={qIndex}>
                           <p className="text-sm font-medium text-base-content break-words">
-                            Q{qIndex + 1}: {question.questions}
+                            Q{qIndex + 1}:{" "}
+                            {question.questions
+                              ? question.questions
+                              : question.question}
                           </p>
                           <p className="text-sm italic text-gray-500 border-l-4 border-primary pl-3 mt-1">
                             Correct Answer: {question.correctAnswer}
