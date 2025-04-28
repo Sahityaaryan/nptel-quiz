@@ -11,7 +11,7 @@ export default async function PaymentInterface({ params }) {
 
   if (!user) {
     redirect("/login");
-
+  }
   return (
     <>
       <PaymentPage user={user} course={course} />

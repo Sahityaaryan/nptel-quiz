@@ -3,11 +3,11 @@
 
 import prisma from "./prisma";
 import { getUserSession } from "./session";
-import nodemailer from "nodemailer";
+// import nodemailer from "nodemailer";
 
-import { DistributedComputing } from "@/data/cloudNetworkQuiz";
+// import { DistributedComputing } from "@/data/cloudNetworkQuiz";
 
-import { Network_Security } from "@/data/computerNetworkQuiz";
+// import { Network_Security } from "@/data/computerNetworkQuiz";
 
 export async function seedCourse() {
   try {
