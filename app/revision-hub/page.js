@@ -14,6 +14,7 @@ export default async function RevisionHubPage() {
     if (text.length <= 150) return text;
     return text.slice(0, 150) + "...";
   };
+  // console.log("user: ", user);
 
   const userId = await getUserId(user);
   const courses = await getSubscribedCourses({ userId });

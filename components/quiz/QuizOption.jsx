@@ -11,14 +11,14 @@ export default function QuizOption({
   const isIncorrect = isSelected && !isCorrect;
 
   return (
-    <div className="form-control m-3">
+    <div className="form-control m-3 w-full max-w-full">
       <label
-        className={`label cursor-pointer p-3 rounded-lg border ${
+        className={`label cursor-pointer p-3 rounded-lg border flex items-start w-full ${
           selectedAnswer
             ? isCorrect
-              ? "border-success bg-success bg-opacity-20"
+              ? "border-success bg-success text-black bg-opacity-20"
               : isIncorrect
-                ? "border-error bg-error bg-opacity-20"
+                ? "border-error bg-error text-black bg-opacity-20"
                 : "border-base-300"
             : "border-base-300"
         }`}
@@ -29,9 +29,11 @@ export default function QuizOption({
           value={option}
           checked={isSelected}
           onChange={() => onAnswerSelected(index, option)}
-          className="radio hidden"
+          className="radio mt-1"
         />
-        <span className="label-text text-lg">{option}</span>
+        <span className="label-text text-lg ml-2 flex-1 break-words whitespace-normal">
+          {option}
+        </span>
       </label>
     </div>
   );
