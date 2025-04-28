@@ -375,7 +375,7 @@ export async function getUserId(user) {
     });
     return id;
   } catch (err) {
-    console.error("Error fetching the user");
+    console.error("Error fetching the user ", err);
   }
 }
 

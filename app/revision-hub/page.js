@@ -45,7 +45,7 @@ export default async function RevisionHubPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.length > 0 ? (
           courses.map((course) => (
-            <Link href={`revision-hub/${course.id}`}>
+            <Link href={`/revision-hub/${course.id}`} key={course.id}>
               <div className="card bg-base-100 w-full h-full flex flex-col shadow-sm rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:z-10">
                 <figure>
                   <img
