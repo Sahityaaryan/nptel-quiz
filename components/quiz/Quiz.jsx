@@ -14,7 +14,7 @@ export default function Quiz({ questions, subtopic, quiz }) {
   const router = useRouter();
   const currentQuestion = questions[activeQuestion];
 
-  console.log("active: ", currentQuestion);
+  // console.log("active: ", currentQuestion);
 
   useEffect(() => {
     if (timer > 0 && !isFinished) {
