@@ -42,4 +42,6 @@ next-env.d.ts
 
 Me.md
 
-/data
+data/computerNetworkQuiz.js
+data/cloudNetworkQuiz.js
+data/pyq/
